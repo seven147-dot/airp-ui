@@ -1,0 +1,15 @@
+{
+  "id": "academy",
+  "name": "学院世界",
+  "version": "0.1.0",
+  "files": {
+    "world": "世界设定.md",
+    "player": "玩家设定.md",
+    "opening": "开场内容.md",
+    "style": "叙事风格.md"
+  },
+  "alwaysInclude": [
+    "世界概述"
+  ],
+  "notes": "后续由 AIRP V10 读取。文件名可以中文，id 建议保持英文且稳定。"
+}

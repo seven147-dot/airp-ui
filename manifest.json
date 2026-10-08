@@ -1,0 +1,11 @@
+{
+  "display_name": "AIRP UI",
+  "loading_order": 99,
+  "js": "index.js",
+  "css": "style.css",
+  "author": "seven147-dot",
+  "version": "0.9.0",
+  "hooks": {
+    "activate": "onActivate"
+  }
+}

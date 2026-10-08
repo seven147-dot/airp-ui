@@ -1,0 +1,14 @@
+# Local drafts and old copies
+素材/
+
+# Generated release archives
+releases/
+*.zip
+
+# Dependencies and local credentials
+node_modules/
+.env
+.env.*
+*.log
+Thumbs.db
+.DS_Store

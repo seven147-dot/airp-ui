@@ -1,0 +1,6034 @@
+/* =========================================================
+   AIRP · Blue Liquid Glass
+   ========================================================= */
+
+#airp-phone-overlay {
+    --airp-blue: #4f8fff;
+    --airp-blue-soft: #8bbcff;
+    --airp-blue-pale: #dcecff;
+
+    --airp-ink: #1d3556;
+    --airp-muted: #7186a2;
+
+    --airp-glass:
+        rgba(255, 255, 255, 0.58);
+
+    --airp-glass-strong:
+        rgba(255, 255, 255, 0.74);
+
+    --airp-border:
+        rgba(255, 255, 255, 0.72);
+
+
+    position: fixed !important;
+
+    inset: 0 !important;
+
+    z-index: 2147483001 !important;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 18px;
+
+    background:
+        rgba(10, 25, 48, 0.48);
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+}
+
+
+#airp-phone-overlay.airp-hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   手机主体
+   ========================================================= */
+
+#airp-phone {
+    position: relative;
+
+    width: min(
+        400px,
+        94vw
+    );
+
+    height: min(
+        790px,
+        91vh
+    );
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.78
+        );
+
+    border-radius: 34px;
+
+    color:
+        var(--airp-ink);
+
+    background:
+
+        radial-gradient(
+            circle at 12% 8%,
+            rgba(
+                255,
+                255,
+                255,
+                0.98
+            ),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 88% 18%,
+            rgba(
+                151,
+                200,
+                255,
+                0.65
+            ),
+            transparent 33%
+        ),
+
+        radial-gradient(
+            circle at 30% 84%,
+            rgba(
+                200,
+                230,
+                255,
+                0.68
+            ),
+            transparent 36%
+        ),
+
+        linear-gradient(
+            155deg,
+            #f8fcff 0%,
+            #eaf4ff 45%,
+            #dcecff 100%
+        );
+
+
+    box-shadow:
+
+        0 26px 70px
+        rgba(
+            4,
+            20,
+            43,
+            0.4
+        ),
+
+        inset 0 1px 0
+        rgba(
+            255,
+            255,
+            255,
+            0.85
+        );
+}
+
+
+#airp-phone::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+
+        linear-gradient(
+            115deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.44
+            ),
+            transparent 24%,
+            transparent 74%,
+            rgba(
+                255,
+                255,
+                255,
+                0.18
+            )
+        );
+
+    z-index: 0;
+}
+
+
+#airp-phone > * {
+    position: relative;
+
+    z-index: 1;
+}
+
+
+/* =========================================================
+   状态栏
+   ========================================================= */
+
+.airp-statusbar {
+    height: 29px;
+
+    box-sizing:
+        border-box;
+
+    display: flex;
+
+    align-items: flex-end;
+    justify-content:
+        space-between;
+
+    padding:
+        0 19px 4px;
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+    color:
+        rgba(
+            26,
+            51,
+            83,
+            0.88
+        );
+}
+
+
+.airp-status-icons {
+    display: flex;
+
+    gap: 7px;
+
+    align-items: center;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   顶栏
+   ========================================================= */
+
+.airp-navbar {
+    height: 53px;
+
+    box-sizing:
+        border-box;
+
+    display: grid;
+
+    grid-template-columns:
+        44px
+        minmax(0, 1fr)
+        44px;
+
+    align-items: center;
+
+    padding:
+        0 8px;
+
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.38
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.18
+        );
+
+    backdrop-filter:
+        blur(18px)
+        saturate(145%);
+
+    -webkit-backdrop-filter:
+        blur(18px)
+        saturate(145%);
+}
+
+
+.airp-navbar-title {
+    overflow: hidden;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+    text-overflow:
+        ellipsis;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    letter-spacing:
+        0.01em;
+}
+
+
+.airp-nav-button {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    color:
+        var(--airp-ink);
+
+    background:
+        transparent;
+
+    cursor: pointer;
+}
+
+
+.airp-nav-button:hover {
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+}
+
+
+.airp-nav-hidden {
+    visibility: hidden;
+}
+
+
+/* =========================================================
+   页面
+   ========================================================= */
+
+.airp-phone-content {
+    height:
+        calc(
+            100% - 111px
+        );
+
+    box-sizing:
+        border-box;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    padding:
+        18px 17px 28px;
+
+    scrollbar-width:
+        none;
+}
+
+
+.airp-phone-content::-webkit-scrollbar {
+    display: none;
+}
+
+
+.airp-page {
+    min-height: 100%;
+}
+
+
+/* =========================================================
+   液态玻璃
+   ========================================================= */
+
+.airp-glass {
+    position: relative;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--airp-border);
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.76
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                0.38
+            )
+        );
+
+    box-shadow:
+
+        0 10px 28px
+        rgba(
+            76,
+            128,
+            190,
+            0.12
+        ),
+
+        inset 0 1px 0
+        rgba(
+            255,
+            255,
+            255,
+            0.86
+        );
+
+    backdrop-filter:
+        blur(24px)
+        saturate(150%);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(150%);
+}
+
+
+.airp-glass::before {
+    content: "";
+
+    position: absolute;
+
+    pointer-events: none;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.26
+            ),
+            transparent 30%
+        );
+}
+
+
+/* =========================================================
+   首页
+   ========================================================= */
+
+.airp-home-screen {
+    padding-top: 4px;
+}
+
+
+.airp-home-clock {
+    margin:
+        4px 2px 30px;
+
+    text-align: center;
+}
+
+
+.airp-home-time {
+    font-size: 55px;
+
+    line-height: 1;
+
+    font-weight: 280;
+
+    letter-spacing:
+        -0.05em;
+
+    color:
+        #285b96;
+
+    text-shadow:
+
+        0 4px 20px
+        rgba(
+            84,
+            151,
+            229,
+            0.15
+        );
+}
+
+
+.airp-home-date {
+    margin-top: 8px;
+
+    font-size: 13px;
+
+    color:
+        var(--airp-muted);
+}
+
+
+.airp-home-location {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 7px;
+
+    padding:
+        5px 10px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.72
+        );
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+
+    font-size: 11px;
+
+    color:
+        #6481a4;
+}
+
+
+/* =========================================================
+   App
+   ========================================================= */
+
+.airp-app-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 14px;
+}
+
+
+.airp-app {
+    min-height: 120px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.76
+        );
+
+    border-radius:
+        24px;
+
+    color:
+        var(--airp-ink);
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.76
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                0.34
+            )
+        );
+
+    box-shadow:
+
+        0 11px 28px
+        rgba(
+            81,
+            134,
+            193,
+            0.12
+        ),
+
+        inset 0 1px 0
+        rgba(
+            255,
+            255,
+            255,
+            0.92
+        );
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+
+.airp-app:active {
+    transform:
+        scale(0.97);
+}
+
+
+.airp-app-icon {
+    width: 57px;
+    height: 57px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.8
+        );
+
+    border-radius:
+        19px;
+
+    color: #ffffff;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #76b2ff,
+            #3f84e8
+        );
+
+    box-shadow:
+
+        0 9px 19px
+        rgba(
+            65,
+            133,
+            224,
+            0.24
+        ),
+
+        inset 0 1px 1px
+        rgba(
+            255,
+            255,
+            255,
+            0.65
+        );
+
+    font-size: 22px;
+}
+
+
+.airp-app span {
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   Section heading
+   ========================================================= */
+
+.airp-section-heading {
+    padding:
+        2px 4px 9px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing:
+        0.05em;
+
+    color:
+        #69829f;
+}
+
+
+.airp-section-gap {
+    margin-top: 24px;
+}
+
+
+/* =========================================================
+   联系人列表
+   ========================================================= */
+
+.airp-contact-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.airp-contact-card {
+    width: 100%;
+
+    min-height: 76px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        11px 13px;
+
+    border-radius:
+        22px;
+
+    color:
+        var(--airp-ink);
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+
+.airp-contact-main {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.airp-contact-name {
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow:
+        ellipsis;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+.airp-contact-subtitle {
+    margin-top: 3px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow:
+        ellipsis;
+
+    font-size: 11px;
+
+    color:
+        var(--airp-muted);
+}
+
+
+.airp-contact-stats {
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color:
+        #5683b8;
+}
+
+
+.airp-contact-arrow {
+    font-size: 11px;
+
+    color:
+        #98abc0;
+}
+
+
+/* =========================================================
+   Avatar
+   ========================================================= */
+
+.airp-avatar {
+    width: 52px;
+    height: 52px;
+
+    flex: 0 0 auto;
+
+    overflow: hidden;
+
+    border:
+        2px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.82
+        );
+
+    border-radius:
+        18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #cce6ff,
+            #8fc1f7
+        );
+
+    box-shadow:
+
+        0 7px 16px
+        rgba(
+            61,
+            117,
+            181,
+            0.16
+        );
+}
+
+
+.airp-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.airp-avatar-fallback {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color:
+        #ffffff;
+
+    font-size: 21px;
+
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   NPC 态度
+   ========================================================= */
+
+.airp-attitude-pill {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 45px;
+
+    padding:
+        5px 9px;
+
+    border-radius:
+        999px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+.airp-attitude-pill.positive {
+    color:
+        #3475b7;
+
+    background:
+        rgba(
+            123,
+            187,
+            255,
+            0.2
+        );
+}
+
+
+.airp-attitude-pill.neutral {
+    color:
+        #718297;
+
+    background:
+        rgba(
+            141,
+            155,
+            174,
+            0.14
+        );
+}
+
+
+.airp-attitude-pill.negative {
+    color:
+        #8a6672;
+
+    background:
+        rgba(
+            194,
+            143,
+            158,
+            0.16
+        );
+}
+
+
+/* =========================================================
+   角色主页
+   ========================================================= */
+
+.airp-profile-page {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+}
+
+
+.airp-profile-hero {
+    border-radius:
+        28px;
+
+    padding-bottom: 17px;
+}
+
+
+.airp-profile-cover {
+    position: relative;
+
+    height: 125px;
+
+    overflow: hidden;
+
+    background:
+
+        radial-gradient(
+            circle at 74% 20%,
+            rgba(
+                255,
+                255,
+                255,
+                0.86
+            ),
+            transparent 26%
+        ),
+
+        linear-gradient(
+            135deg,
+            #cce7ff,
+            #8cbdf5 58%,
+            #c8e5ff
+        );
+}
+
+
+.airp-profile-cover img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.airp-profile-header-row {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0 15px;
+}
+
+
+.airp-profile-avatar {
+    width: 74px;
+    height: 74px;
+
+    margin-top: -36px;
+
+    border-radius:
+        24px;
+
+    border-width:
+        3px;
+}
+
+
+.airp-profile-actions {
+    display: flex;
+
+    gap: 7px;
+
+    padding-top: 9px;
+}
+
+
+.airp-profile-action {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        7px 11px;
+
+    border:
+        1px solid
+        rgba(
+            109,
+            159,
+            214,
+            0.18
+        );
+
+    border-radius:
+        999px;
+
+    color:
+        #47719f;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.55
+        );
+
+    font-size: 10px;
+
+    font-weight: 650;
+
+    cursor: pointer;
+}
+
+
+.airp-profile-action-primary {
+    color: white;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #72aff9,
+            #4788e8
+        );
+
+    box-shadow:
+
+        0 7px 16px
+        rgba(
+            67,
+            133,
+            222,
+            0.2
+        );
+}
+
+
+.airp-profile-name {
+    padding:
+        12px 17px 0;
+
+    font-size: 21px;
+
+    font-weight: 760;
+}
+
+
+.airp-profile-handle {
+    padding:
+        2px 17px 0;
+
+    font-size: 11px;
+
+    color:
+        #7891ae;
+}
+
+
+.airp-profile-signature {
+    padding:
+        11px 17px 0;
+
+    font-size: 12px;
+
+    line-height: 1.65;
+
+    color:
+        #4b6582;
+}
+
+
+.airp-profile-tags {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    padding:
+        11px 17px 0;
+}
+
+
+.airp-profile-tags span {
+    padding:
+        5px 8px;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(
+            90,
+            156,
+            230,
+            0.1
+        );
+
+    font-size: 9px;
+
+    color:
+        #5d7fa6;
+}
+
+
+.airp-profile-bio {
+    padding:
+        7px 17px 0;
+
+    font-size: 11px;
+
+    line-height: 1.65;
+
+    color:
+        #506986;
+}
+
+
+.airp-profile-bio p {
+    margin:
+        6px 0 0;
+}
+
+
+.airp-profile-background {
+    color:
+        #7489a1;
+}
+
+
+.airp-profile-meta {
+    display: flex;
+
+    padding:
+        13px 17px 0;
+}
+
+
+.airp-profile-meta div {
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 5px;
+}
+
+
+.airp-profile-meta strong {
+    font-size: 14px;
+}
+
+
+.airp-profile-meta span {
+    font-size: 9px;
+
+    color:
+        #8194aa;
+}
+
+
+/* =========================================================
+   最近动态
+   ========================================================= */
+
+.airp-latest-moment,
+.airp-relation-card,
+.airp-npc-relation {
+    padding:
+        15px;
+
+    border-radius:
+        23px;
+}
+
+
+.airp-latest-moment {
+    cursor: pointer;
+}
+
+
+.airp-card-heading {
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    color:
+        #587493;
+}
+
+
+.airp-card-heading i {
+    font-size: 9px;
+
+    color:
+        #9aaec4;
+}
+
+
+.airp-latest-time {
+    margin-top: 11px;
+
+    font-size: 9px;
+
+    color:
+        #9aabc0;
+}
+
+
+.airp-latest-text {
+    margin-top: 5px;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+.airp-empty-small {
+    margin-top: 10px;
+
+    font-size: 11px;
+
+    color:
+        #99a9bb;
+}
+
+
+/* =========================================================
+   七维关系
+   ========================================================= */
+
+.airp-relation-label {
+    margin-top: 12px;
+
+    padding:
+        9px 11px;
+
+    border-radius:
+        14px;
+
+    color:
+        #3e72ad;
+
+    background:
+        rgba(
+            81,
+            154,
+            239,
+            0.1
+        );
+
+    font-size: 11px;
+
+    font-weight: 650;
+}
+
+
+.airp-relation-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 15px;
+}
+
+
+.airp-relation-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    margin-bottom: 6px;
+
+    font-size: 11px;
+
+    color:
+        #526f8e;
+}
+
+
+.airp-relation-top strong {
+    font-size: 11px;
+
+    color:
+        #3d6fa7;
+}
+
+
+.airp-relation-track {
+    height: 4px;
+
+    overflow: hidden;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(
+            78,
+            125,
+            177,
+            0.1
+        );
+}
+
+
+.airp-relation-fill {
+    height: 100%;
+
+    border-radius:
+        inherit;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #98c8ff,
+            #4f90ee
+        );
+
+    box-shadow:
+
+        0 0 10px
+        rgba(
+            75,
+            145,
+            235,
+            0.25
+        );
+}
+
+
+/* =========================================================
+   NPC relation
+   ========================================================= */
+
+.airp-npc-attitude {
+    margin-top: 13px;
+}
+
+
+.airp-npc-relation p {
+    margin:
+        11px 0 0;
+
+    font-size: 11px;
+
+    line-height: 1.65;
+
+    color:
+        #667e99;
+}
+
+
+/* =========================================================
+   朋友圈
+   ========================================================= */
+
+.airp-filter-chip {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 13px;
+
+    padding:
+        6px 11px 6px 6px;
+
+    border-radius:
+        999px;
+
+    font-size: 10px;
+
+    color:
+        #5b7898;
+}
+
+
+.airp-filter-avatar {
+    width: 27px;
+    height: 27px;
+
+    border-radius:
+        10px;
+}
+
+
+.airp-moment-feed {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 11px;
+}
+
+
+.airp-moment-card {
+    padding: 14px;
+
+    border-radius:
+        23px;
+}
+
+
+.airp-moment-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.airp-moment-avatar {
+    width: 39px;
+    height: 39px;
+
+    border-radius:
+        14px;
+}
+
+
+.airp-moment-name {
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+
+.airp-moment-time {
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color:
+        #94a6ba;
+}
+
+
+.airp-moment-text {
+    margin-top: 12px;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+
+.airp-moment-image {
+    overflow: hidden;
+
+    margin-top: 11px;
+
+    border-radius:
+        17px;
+}
+
+
+.airp-moment-image img {
+    width: 100%;
+
+    display: block;
+}
+
+
+/* =========================================================
+   Empty / Placeholder
+   ========================================================= */
+
+.airp-empty {
+    padding:
+        28px 12px;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    color:
+        #93a5b9;
+}
+
+
+.airp-placeholder-page {
+    min-height: 65%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color:
+        #6e87a4;
+}
+
+
+.airp-placeholder-icon {
+    width: 66px;
+    height: 66px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.8
+        );
+
+    border-radius:
+        23px;
+
+    color:
+        white;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #8fc4ff,
+            #518ee7
+        );
+
+    box-shadow:
+
+        0 10px 25px
+        rgba(
+            61,
+            130,
+            220,
+            0.22
+        );
+
+    font-size: 25px;
+}
+
+
+.airp-placeholder-page h2 {
+    margin:
+        17px 0 5px;
+
+    font-size: 16px;
+
+    color:
+        #42668e;
+}
+
+
+.airp-placeholder-page p {
+    max-width: 250px;
+
+    margin: 0;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   Home indicator
+   ========================================================= */
+
+.airp-home-indicator {
+    position: absolute;
+
+    left: 50%;
+    bottom: 7px;
+
+    width: 105px;
+    height: 4px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(
+            42,
+            70,
+            101,
+            0.25
+        );
+}
+
+
+/* =========================================================
+   移动端
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    #airp-phone-overlay {
+        padding: 0;
+    }
+
+
+    #airp-phone {
+        width: 100vw;
+        height: 100dvh;
+
+        max-width: none;
+        max-height: none;
+
+        border: 0;
+
+        border-radius: 0;
+    }
+
+
+    .airp-statusbar {
+        height:
+            calc(
+                29px +
+                env(
+                    safe-area-inset-top
+                )
+            );
+
+        padding-top:
+            env(
+                safe-area-inset-top
+            );
+    }
+
+
+    .airp-phone-content {
+        height:
+            calc(
+                100% -
+                111px -
+                env(
+                    safe-area-inset-top
+                )
+            );
+
+        padding-bottom:
+            calc(
+                30px +
+                env(
+                    safe-area-inset-bottom
+                )
+            );
+    }
+
+
+    .airp-home-indicator {
+        bottom:
+            calc(
+                7px +
+                env(
+                    safe-area-inset-bottom
+                )
+            );
+    }
+
+}
+/* =========================================================
+   AIRP 视觉微调 v1
+   头像层级 + 更浅的蓝色重点色
+   ========================================================= */
+
+/* --- 修复主页封面挡住头像 --- */
+
+.airp-profile-cover {
+    position: relative;
+    z-index: 1;
+}
+
+.airp-profile-header-row {
+    position: relative;
+    z-index: 3;
+}
+
+.airp-profile-avatar {
+    position: relative;
+    z-index: 4;
+
+    border: 3px solid rgba(255, 255, 255, 0.95);
+
+    box-shadow:
+        0 9px 22px rgba(92, 143, 196, 0.16),
+        0 0 0 1px rgba(127, 180, 226, 0.08);
+}
+
+
+/* --- 整体重点色再浅一点 --- */
+
+#airp-phone-overlay {
+    --airp-blue: #8dbcf1;
+    --airp-blue-soft: #b8d8f8;
+    --airp-blue-pale: #e6f2ff;
+
+    --airp-ink: #294866;
+    --airp-muted: #7d94ad;
+}
+
+
+/* App 图标：私聊 / 朋友圈 / 论坛 / 角色 */
+
+.airp-app-icon {
+    background:
+        linear-gradient(
+            145deg,
+            #c3e0ff,
+            #8ebcef
+        );
+
+    box-shadow:
+        0 8px 20px rgba(104, 157, 215, 0.16),
+        inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+
+/* 主页时间也柔和一点 */
+
+.airp-home-time {
+    color: #628ab5;
+}
+
+
+/* 角色主页的朋友圈主按钮 */
+
+.airp-profile-action-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #acd1f8,
+            #82b3e9
+        );
+
+    box-shadow:
+        0 7px 16px rgba(88, 145, 205, 0.14);
+}
+
+
+/* 关系条 */
+
+.airp-relation-fill {
+    background:
+        linear-gradient(
+            90deg,
+            #d1e7ff,
+            #8dbcf0
+        );
+
+    box-shadow:
+        0 0 9px rgba(111, 167, 224, 0.16);
+}
+
+
+/* 空状态图标 */
+
+.airp-placeholder-icon {
+    background:
+        linear-gradient(
+            145deg,
+            #c2dfff,
+            #8dbcf0
+        );
+
+    box-shadow:
+        0 9px 22px rgba(91, 151, 216, 0.15);
+}
+
+
+/* 默认主页封面也再浅一点 */
+
+.airp-profile-cover {
+    background:
+        radial-gradient(
+            circle at 74% 20%,
+            rgba(255, 255, 255, 0.92),
+            transparent 27%
+        ),
+        linear-gradient(
+            135deg,
+            #d9ecff,
+            #abd1f8 58%,
+            #e0f0ff
+        );
+}
+/* =========================================================
+   AIRP · 多攻略角色管理
+   ========================================================= */
+
+.airp-character-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 12px;
+    padding: 2px 3px;
+}
+
+.airp-heading-no-pad {
+    padding: 0;
+}
+
+.airp-character-count {
+    margin-top: 3px;
+
+    font-size: 9px;
+    color: #91a5ba;
+}
+
+.airp-add-character-button {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,.85);
+    border-radius: 14px;
+
+    color: #6f9ccc;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.82),
+            rgba(219,237,255,.56)
+        );
+
+    box-shadow:
+        0 7px 18px rgba(91,140,190,.12),
+        inset 0 1px 0 rgba(255,255,255,.9);
+
+    cursor: pointer;
+}
+
+.airp-add-character-button:active {
+    transform: scale(.96);
+}
+
+
+/* 角色库顶部说明 */
+
+.airp-library-intro {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px;
+
+    border-radius: 22px;
+}
+
+.airp-library-intro-icon {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    color: #6f9dcc;
+
+    background:
+        rgba(215,235,255,.72);
+
+    font-size: 17px;
+}
+
+.airp-library-intro strong {
+    font-size: 12px;
+    color: #4d7095;
+}
+
+.airp-library-intro p {
+    margin: 4px 0 0;
+
+    font-size: 9px;
+    line-height: 1.55;
+
+    color: #8499af;
+}
+
+.airp-section-gap-small {
+    margin-top: 17px;
+}
+
+
+/* 角色库列表 */
+
+.airp-library-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.airp-library-card {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 11px 12px;
+
+    border-radius: 21px;
+}
+
+.airp-library-avatar {
+    width: 47px;
+    height: 47px;
+
+    border-radius: 16px;
+}
+
+.airp-library-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.airp-library-name-row {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.airp-library-name {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: #416384;
+}
+
+.airp-library-subtitle {
+    margin-top: 4px;
+
+    font-size: 9px;
+    color: #91a4b7;
+}
+
+.airp-current-card-badge {
+    flex: 0 0 auto;
+
+    padding: 3px 6px;
+
+    border-radius: 999px;
+
+    color: #6f96bd;
+
+    background:
+        rgba(197,224,250,.52);
+
+    font-size: 8px;
+}
+
+
+/* 加入 / 移出 */
+
+.airp-library-action {
+    flex: 0 0 auto;
+
+    min-width: 50px;
+
+    padding: 7px 9px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 650;
+
+    cursor: pointer;
+}
+
+.airp-library-add {
+    border:
+        1px solid rgba(148,190,229,.28);
+
+    color: #638fb9;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(225,240,255,.9),
+            rgba(197,224,250,.76)
+        );
+}
+
+.airp-library-remove {
+    border:
+        1px solid rgba(146,163,182,.18);
+
+    color: #8797a8;
+
+    background:
+        rgba(255,255,255,.48);
+}
+/* =========================================================
+   AIRP State v3 · 世界状态 / 事件 / 知情 / 人物关系
+   直接追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-world-widget {
+    width: 100%;
+    display: block;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+.airp-world-widget:active {
+    transform: scale(.99);
+}
+
+.airp-world-widget-arrow {
+    margin-left: 2px;
+    font-size: 7px;
+    opacity: .55;
+}
+
+.airp-home-scene {
+    max-width: 290px;
+    margin: 8px auto 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    color: #8da1b5;
+}
+
+.airp-home-present {
+    margin-top: 6px;
+    font-size: 8px;
+    color: #9aabba;
+}
+
+/* 世界状态 */
+
+.airp-world-state-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.airp-world-form,
+.airp-relation-editor,
+.airp-perspective-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 16px;
+    border-radius: 24px;
+}
+
+.airp-world-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.airp-world-field > span {
+    padding-left: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #718ba6;
+}
+
+.airp-world-field input,
+.airp-world-field textarea,
+.airp-world-field select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(135, 180, 221, .18);
+    border-radius: 15px;
+    outline: none;
+    resize: none;
+    color: #355572;
+    background: rgba(255, 255, 255, .48);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7);
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.airp-world-field input:focus,
+.airp-world-field textarea:focus,
+.airp-world-field select:focus {
+    border-color: rgba(121, 174, 222, .42);
+    background: rgba(255, 255, 255, .68);
+}
+
+.airp-two-column-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.airp-present-list,
+.airp-knowledge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.airp-present-character,
+.airp-knowledge-character {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.airp-present-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+}
+
+.airp-present-main,
+.airp-knowledge-main {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.airp-present-main strong,
+.airp-knowledge-main strong {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: #476988;
+}
+
+.airp-present-main span,
+.airp-knowledge-main span {
+    font-size: 9px;
+    color: #91a5b8;
+}
+
+.airp-present-character input,
+.airp-knowledge-character input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.airp-present-toggle {
+    position: relative;
+    width: 36px;
+    height: 21px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: rgba(134, 157, 179, .20);
+    transition: .16s ease;
+}
+
+.airp-present-toggle::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 2px 6px rgba(77, 111, 145, .16);
+    transition: .16s ease;
+}
+
+.airp-present-character input:checked + .airp-present-toggle,
+.airp-knowledge-character input:checked + .airp-present-toggle {
+    background: linear-gradient(135deg, #bddcf9, #91bee9);
+}
+
+.airp-present-character input:checked + .airp-present-toggle::after,
+.airp-knowledge-character input:checked + .airp-present-toggle::after {
+    transform: translateX(15px);
+}
+
+.airp-knowledge-forced {
+    cursor: default;
+}
+
+.airp-knowledge-forced .airp-present-toggle {
+    opacity: .66;
+}
+
+.airp-world-save {
+    width: 100%;
+    margin-top: 18px;
+    padding: 11px 16px;
+    border: 1px solid rgba(255, 255, 255, .84);
+    border-radius: 18px;
+    color: #527da6;
+    background: linear-gradient(135deg, rgba(224, 240, 255, .92), rgba(192, 220, 247, .78));
+    box-shadow: 0 8px 22px rgba(87, 139, 190, .13);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.airp-world-save:active {
+    transform: scale(.98);
+}
+
+.airp-world-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.airp-world-tool {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px;
+    border-radius: 20px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.airp-world-tool > div:nth-child(2) {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.airp-world-tool strong {
+    font-size: 11px;
+    color: #4d6e8e;
+}
+
+.airp-world-tool span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 8px;
+    color: #95a7b9;
+}
+
+.airp-world-tool > i {
+    font-size: 8px;
+    color: #a3b5c6;
+}
+
+.airp-world-tool-icon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    color: #75a1cf;
+    background: rgba(211, 232, 253, .66);
+}
+
+/* 事件 */
+
+.airp-list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 13px;
+    padding: 2px 3px;
+}
+
+.airp-event-list,
+.airp-pair-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.airp-event-card {
+    width: 100%;
+    display: block;
+    padding: 13px 14px;
+    border-radius: 21px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.airp-event-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.airp-event-time,
+.airp-event-detail-time {
+    font-size: 9px;
+    font-weight: 650;
+    color: #7895b1;
+}
+
+.airp-event-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.airp-mini-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 18px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    color: #688fb7;
+    background: rgba(210, 232, 253, .64);
+}
+
+.airp-mini-chip-muted {
+    color: #899cad;
+    background: rgba(236, 242, 248, .72);
+}
+
+.airp-event-summary {
+    margin-top: 9px;
+    font-size: 11px;
+    line-height: 1.65;
+    color: #3f617f;
+}
+
+.airp-event-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 8px;
+    color: #95a6b6;
+}
+
+.airp-event-person-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.airp-event-person {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 9px;
+    border-radius: 17px;
+    cursor: pointer;
+}
+
+.airp-event-person-avatar {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-radius: 11px;
+}
+
+.airp-event-person-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.airp-event-person > span {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 9px;
+    color: #587792;
+}
+
+.airp-event-person input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.airp-event-person-check {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 8px;
+    color: transparent;
+    background: rgba(132, 159, 185, .12);
+}
+
+.airp-event-person input:checked ~ .airp-event-person-check {
+    color: #fff;
+    background: linear-gradient(135deg, #b8d8f8, #8dbcf1);
+}
+
+.airp-event-detail {
+    padding: 16px;
+    border-radius: 24px;
+}
+
+.airp-event-detail h2 {
+    margin: 7px 0 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #385b79;
+}
+
+.airp-event-detail-chips {
+    justify-content: flex-start;
+    margin-top: 11px;
+}
+
+.airp-event-detail-row {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 8px;
+    margin-top: 13px;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+.airp-event-detail-row span {
+    color: #9aabba;
+}
+
+.airp-event-detail-row strong {
+    font-weight: 600;
+    color: #607e9a;
+}
+
+.airp-event-source-box {
+    margin-top: 13px;
+    padding: 10px 11px;
+    border-radius: 15px;
+    background: rgba(224, 239, 253, .46);
+}
+
+.airp-event-source-box span {
+    font-size: 8px;
+    color: #8da3b8;
+}
+
+.airp-event-source-box p {
+    margin: 4px 0 0;
+    font-size: 9px;
+    line-height: 1.55;
+    color: #66839d;
+}
+
+.airp-knowledge-note {
+    margin-top: 10px;
+    padding: 0 4px;
+    font-size: 8px;
+    line-height: 1.6;
+    color: #97a9b9;
+}
+
+/* 人物关系 */
+
+.airp-relation-page-note {
+    margin-top: 4px;
+    margin-bottom: 14px;
+    line-height: 1.55;
+}
+
+.airp-pair-card {
+    width: 100%;
+    display: block;
+    padding: 14px;
+    border-radius: 21px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.airp-pair-names {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.airp-pair-names strong {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    color: #486b8b;
+}
+
+.airp-pair-names i,
+.airp-relation-editor-title i {
+    flex: 0 0 auto;
+    font-size: 8px;
+    color: #9db4ca;
+}
+
+.airp-pair-summary {
+    margin-top: 8px;
+    font-size: 9px;
+    line-height: 1.55;
+    color: #8196aa;
+}
+
+.airp-pair-attitudes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 8px;
+    font-size: 8px;
+    color: #9aabba;
+}
+
+.airp-relation-editor-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-bottom: 2px;
+    font-size: 12px;
+    color: #496c8d;
+}
+
+.airp-perspective-editor {
+    margin-top: 10px;
+}
+
+/* 小屏 */
+
+@media (max-width: 420px) {
+    .airp-two-column-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .airp-event-person-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+/* =========================================================
+   AIRP State v4 · 信息传播中心
+   追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-tool-badge {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    color: #688fb6;
+    background: rgba(205, 230, 253, .78);
+
+    font-size: 9px;
+    font-weight: 750;
+}
+
+.airp-event-audience-note {
+    margin: -2px 2px 10px;
+
+    color: #8ba0b5;
+
+    font-size: 9px;
+    line-height: 1.6;
+}
+
+.airp-propagation-summary-box {
+    margin-top: 10px;
+}
+
+.airp-propagation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+
+    margin-top: 14px;
+}
+
+.airp-propagation-card {
+    padding: 13px;
+    border-radius: 22px;
+}
+
+.airp-propagation-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.airp-propagation-person {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.airp-propagation-person strong {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #466987;
+    font-size: 12px;
+}
+
+.airp-propagation-person span {
+    color: #8da2b7;
+    font-size: 9px;
+}
+
+.airp-propagation-event {
+    width: 100%;
+
+    margin-top: 11px;
+    padding: 10px 11px;
+
+    border: 1px solid rgba(137, 181, 221, .14);
+    border-radius: 15px;
+
+    text-align: left;
+    color: inherit;
+    background: rgba(255,255,255,.38);
+
+    cursor: pointer;
+}
+
+.airp-propagation-event span {
+    color: #91a4b7;
+    font-size: 8px;
+}
+
+.airp-propagation-event p {
+    margin: 4px 0 0;
+
+    color: #55738f;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.airp-propagation-reason {
+    margin-top: 8px;
+    padding: 0 2px;
+
+    color: #93a6b9;
+    font-size: 8.5px;
+    line-height: 1.55;
+}
+
+.airp-propagation-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+
+    margin-top: 11px;
+}
+
+.airp-propagation-actions button {
+    padding: 9px 10px;
+
+    border-radius: 14px;
+
+    font-family: inherit;
+    font-size: 9.5px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.airp-propagation-skip {
+    border: 1px solid rgba(145, 164, 183, .16);
+
+    color: #8597a9;
+    background: rgba(255,255,255,.46);
+}
+
+.airp-propagation-confirm {
+    border: 1px solid rgba(143, 188, 229, .22);
+
+    color: #5f88b0;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(227, 242, 255, .92),
+            rgba(197, 225, 250, .78)
+        );
+}
+
+.airp-propagation-actions button:active,
+.airp-propagation-event:active {
+    transform: scale(.985);
+}
+/* =========================================================
+   AIRP State v5 · 角色反应 / 行动队列
+   追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-reaction-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+
+    padding: 14px;
+    border-radius: 22px;
+}
+
+.airp-reaction-summary > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.airp-reaction-summary strong {
+    color: #5d86ad;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.airp-reaction-summary span {
+    color: #91a4b7;
+    font-size: 8.5px;
+}
+
+.airp-reaction-note {
+    margin: 10px 3px 0;
+
+    color: #8ea2b6;
+    font-size: 9px;
+    line-height: 1.65;
+}
+
+.airp-reaction-list,
+.airp-action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.airp-reaction-card,
+.airp-action-card,
+.airp-reaction-context,
+.airp-reaction-deltas,
+.airp-reaction-archive {
+    padding: 13px;
+    border-radius: 22px;
+}
+
+.airp-reaction-head,
+.airp-action-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.airp-reaction-person,
+.airp-action-head > div:last-child {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.airp-reaction-person strong,
+.airp-action-head strong {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #466987;
+    font-size: 12px;
+}
+
+.airp-reaction-person span,
+.airp-action-head span {
+    color: #8da2b7;
+    font-size: 9px;
+}
+
+.airp-reaction-chip {
+    flex: 0 0 auto;
+}
+
+.airp-reaction-event,
+.airp-reaction-source-event {
+    width: 100%;
+
+    margin-top: 11px;
+    padding: 10px 11px;
+
+    border: 1px solid rgba(137, 181, 221, .14);
+    border-radius: 15px;
+
+    text-align: left;
+    color: inherit;
+    background: rgba(255,255,255,.38);
+}
+
+button.airp-reaction-event {
+    cursor: pointer;
+}
+
+.airp-reaction-event span,
+.airp-reaction-source-event span {
+    color: #91a4b7;
+    font-size: 8px;
+}
+
+.airp-reaction-event p,
+.airp-reaction-source-event p {
+    margin: 4px 0 0;
+
+    color: #55738f;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.airp-reaction-current {
+    margin-top: 9px;
+    padding: 0 2px;
+
+    color: #7991a9;
+    font-size: 9px;
+}
+
+.airp-reaction-actions,
+.airp-action-buttons,
+.airp-reaction-save-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+
+    margin-top: 11px;
+}
+
+.airp-reaction-actions button,
+.airp-action-buttons button,
+.airp-reaction-save-row button {
+    min-width: 0;
+    padding: 9px 10px;
+
+    border-radius: 14px;
+
+    font-family: inherit;
+    font-size: 9.5px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.airp-reaction-ignore,
+.airp-action-buttons button:first-child {
+    border: 1px solid rgba(145, 164, 183, .16);
+
+    color: #8597a9;
+    background: rgba(255,255,255,.46);
+}
+
+.airp-reaction-process,
+.airp-action-done {
+    border: 1px solid rgba(143, 188, 229, .22);
+
+    color: #5f88b0;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(227, 242, 255, .92),
+            rgba(197, 225, 250, .78)
+        );
+}
+
+.airp-reaction-detail-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.airp-reaction-form-block {
+    margin-top: 11px;
+}
+
+.airp-reaction-delta-note {
+    margin: 8px 0 12px;
+
+    color: #8fa2b5;
+    font-size: 8.5px;
+    line-height: 1.6;
+}
+
+.airp-reaction-delta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.airp-reaction-delta-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 34px 66px;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 9px;
+
+    border: 1px solid rgba(139, 181, 220, .12);
+    border-radius: 14px;
+
+    background: rgba(255,255,255,.30);
+}
+
+.airp-reaction-delta-row > span {
+    color: #617d98;
+    font-size: 10px;
+}
+
+.airp-reaction-delta-row > b {
+    color: #7f97ad;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.airp-reaction-delta-row input {
+    box-sizing: border-box;
+    width: 100%;
+
+    padding: 6px 7px;
+
+    border: 1px solid rgba(130, 175, 216, .18);
+    border-radius: 10px;
+    outline: none;
+
+    color: #4d6f8d;
+    background: rgba(255,255,255,.58);
+
+    font-family: inherit;
+    font-size: 10px;
+    text-align: center;
+}
+
+.airp-reaction-delta-row input:focus {
+    border-color: rgba(121, 174, 222, .42);
+    background: rgba(255,255,255,.74);
+}
+
+.airp-reaction-save {
+    margin-top: 0;
+}
+
+.airp-action-card p {
+    margin: 8px 0 0;
+
+    color: #587590;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.airp-action-target,
+.airp-action-source {
+    margin-top: 8px;
+
+    color: #8398ac;
+    font-size: 8.5px;
+    line-height: 1.55;
+}
+
+.airp-action-source {
+    padding-top: 7px;
+    border-top: 1px solid rgba(145, 180, 211, .10);
+}
+
+.airp-reaction-archive {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.airp-reaction-archive strong {
+    color: #4e708f;
+    font-size: 13px;
+}
+
+.airp-reaction-archive span {
+    color: #8ea2b5;
+    font-size: 9px;
+}
+
+.airp-reaction-archive p {
+    margin: 0;
+
+    color: #66819b;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.airp-reaction-actions button:active,
+.airp-action-buttons button:active,
+.airp-reaction-save-row button:active,
+.airp-reaction-event:active {
+    transform: scale(.985);
+}
+/* =========================================================
+   AIRP · State v6 · 社交行动落地
+   ========================================================= */
+
+.airp-social-page-note {
+    margin-top: 4px;
+    margin-bottom: 14px;
+}
+
+.airp-chat-list,
+.airp-forum-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.airp-chat-list-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 12px;
+    border-radius: 20px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.airp-chat-list-main {
+    min-width: 0;
+    flex: 1;
+}
+
+.airp-chat-list-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.airp-chat-list-top strong {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #496b89;
+    font-size: 11.5px;
+}
+
+.airp-chat-list-top span {
+    flex: 0 0 auto;
+    color: #9aabba;
+    font-size: 8px;
+}
+
+.airp-chat-list-main p {
+    margin: 4px 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #8197ab;
+    font-size: 9px;
+}
+
+.airp-social-unread {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #ffffff;
+    background: #8fbce7;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.airp-chat-thread-page {
+    min-height: 100%;
+}
+
+.airp-chat-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.airp-chat-message {
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+}
+
+.airp-chat-message.is-player {
+    justify-content: flex-end;
+}
+
+.airp-chat-message-avatar {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border-radius: 11px;
+}
+
+.airp-chat-bubble-wrap {
+    max-width: 78%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.airp-chat-message.is-player .airp-chat-bubble-wrap {
+    align-items: flex-end;
+}
+
+.airp-chat-bubble {
+    padding: 9px 11px;
+    border: 1px solid rgba(140, 182, 220, .14);
+    border-radius: 16px 16px 16px 6px;
+    color: #4f6e89;
+    background: rgba(255,255,255,.60);
+    box-shadow: 0 5px 15px rgba(82,128,168,.08);
+    font-size: 10px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.airp-chat-message.is-player .airp-chat-bubble {
+    border-radius: 16px 16px 6px 16px;
+    color: #4f78a0;
+    background: linear-gradient(135deg, rgba(222,239,255,.92), rgba(194,221,247,.80));
+}
+
+.airp-chat-bubble-wrap > span {
+    padding: 0 3px;
+    color: #a0afbe;
+    font-size: 7.5px;
+}
+
+.airp-chat-readonly-note {
+    margin-top: 18px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    color: #91a3b4;
+    background: rgba(255,255,255,.30);
+    font-size: 8.5px;
+    line-height: 1.55;
+    text-align: center;
+}
+
+.airp-forum-post {
+    padding: 13px 14px;
+    border-radius: 21px;
+}
+
+.airp-forum-post-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.airp-forum-author-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: #7199be;
+    background: rgba(214,233,250,.64);
+}
+
+.airp-forum-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+}
+
+.airp-forum-post-head > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.airp-forum-post-head strong {
+    color: #4d6d8a;
+    font-size: 10px;
+}
+
+.airp-forum-post-head span {
+    color: #9aabba;
+    font-size: 8px;
+}
+
+.airp-forum-post h3 {
+    margin: 11px 0 0;
+    color: #476987;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.airp-forum-post p {
+    margin: 8px 0 0;
+    color: #627e97;
+    font-size: 10px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.airp-action-intent {
+    margin-top: 11px;
+    padding: 10px 11px;
+    border: 1px solid rgba(137,181,221,.12);
+    border-radius: 15px;
+    background: rgba(255,255,255,.34);
+}
+
+.airp-action-intent span {
+    color: #91a4b7;
+    font-size: 8px;
+}
+
+.airp-action-intent p {
+    margin: 4px 0 0;
+    color: #587590;
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.airp-action-anonymous-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    border: 1px solid rgba(135,180,221,.14);
+    border-radius: 14px;
+    color: #6f879e;
+    background: rgba(255,255,255,.34);
+    font-size: 9.5px;
+}
+
+.airp-action-anonymous-row input {
+    accent-color: #95bee7;
+}
+
+.airp-chat-list-item:active,
+.airp-forum-post:active {
+    transform: scale(.99);
+}
+/* =========================================================
+   AIRP State v7 · 自动状态追踪 / 设置页
+   追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-v7-tracker-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 13px;
+    margin-bottom: 14px;
+    border-radius: 20px;
+}
+
+.airp-v7-tracker-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: rgba(137, 157, 178, .34);
+    box-shadow: 0 0 0 4px rgba(143, 177, 210, .08);
+}
+
+.airp-v7-tracker-dot.is-on {
+    background: #9fc8ee;
+    box-shadow: 0 0 0 4px rgba(159, 200, 238, .14);
+}
+
+.airp-v7-tracker-banner > div:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.airp-v7-tracker-banner strong {
+    color: #4d6f91;
+    font-size: 11px;
+}
+
+.airp-v7-tracker-banner span {
+    color: #91a3b6;
+    font-size: 8.5px;
+}
+
+.airp-v7-tracker-banner button {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 13px;
+    color: #78a2cb;
+    background: rgba(235,246,255,.62);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+    cursor: pointer;
+}
+
+.airp-v7-world-summary {
+    padding: 15px;
+    border-radius: 23px;
+}
+
+.airp-v7-world-summary > div:not(.airp-v7-present-chips) {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.airp-v7-world-summary > div > span {
+    color: #9aabbb;
+    font-size: 8.5px;
+}
+
+.airp-v7-world-summary > div > strong {
+    color: #486987;
+    font-size: 10.5px;
+    font-weight: 650;
+}
+
+.airp-v7-world-summary > p {
+    margin: 12px 0;
+    color: #71889e;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.airp-v7-present-chips {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px !important;
+    margin: 0 !important;
+}
+
+.airp-v7-present-chips span {
+    padding: 5px 8px;
+    border-radius: 999px;
+    color: #648bb1 !important;
+    background: rgba(209, 232, 253, .52);
+    font-size: 8.5px !important;
+}
+
+.airp-v7-settings-page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.airp-v7-settings-card,
+.airp-v7-runtime {
+    padding: 15px;
+    border-radius: 23px;
+}
+
+.airp-v7-setting-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.airp-v7-setting-row + .airp-v7-setting-row {
+    border-top: 1px solid rgba(135, 172, 205, .09);
+}
+
+.airp-v7-setting-row > div {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.airp-v7-setting-row strong {
+    color: #4d6d8c;
+    font-size: 10.5px;
+}
+
+.airp-v7-setting-row div > span {
+    color: #91a4b7;
+    font-size: 8.5px;
+    line-height: 1.55;
+}
+
+.airp-v7-setting-row input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.airp-v7-setting-row .airp-present-toggle {
+    width: 36px;
+    height: 21px;
+}
+
+.airp-v7-setting-row input:checked + .airp-present-toggle {
+    background: linear-gradient(135deg, #bddcf9, #91bee9);
+}
+
+.airp-v7-setting-row input:checked + .airp-present-toggle::after {
+    transform: translateX(15px);
+}
+
+.airp-v7-settings-card .airp-world-field {
+    margin-top: 12px;
+}
+
+.airp-v7-runtime {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.airp-v7-runtime > div:not(.airp-card-heading) {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.airp-v7-runtime > div > span {
+    color: #93a6b8;
+    font-size: 8.5px;
+}
+
+.airp-v7-runtime > div > strong {
+    color: #587b9b;
+    font-size: 9px;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.airp-v7-runtime p {
+    margin: 3px 0 0;
+    padding: 9px 10px;
+    border-radius: 13px;
+    color: #8498ab;
+    background: rgba(240,247,253,.56);
+    font-size: 8.5px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+/* =========================================================
+   AIRP State v8 · 全局主题 / 气泡叙事 / 手机自适应 / 特殊开场
+   直接追加到现有 style.css 最底部
+   ========================================================= */
+
+/* ---------- 整体酒馆视觉 ---------- */
+body.airp-ui-enabled {
+    --airp-page-max: 980px;
+    --airp-glass-bg: rgba(247, 251, 255, .72);
+    --airp-glass-strong: rgba(250, 253, 255, .88);
+    --airp-line: rgba(139, 180, 218, .18);
+    --airp-line-strong: rgba(126, 169, 209, .28);
+    --airp-text: #526f8a;
+    --airp-text-soft: #8297ab;
+    --airp-accent: #8db9e4;
+    --airp-accent-soft: #dcecff;
+    --airp-user-bg: rgba(220, 237, 253, .76);
+    --airp-ai-bg: rgba(250, 253, 255, .68);
+}
+
+body.airp-ui-enabled #bg1,
+body.airp-ui-enabled #bg_custom {
+    filter: saturate(.72) brightness(1.05);
+}
+
+body.airp-ui-enabled #chat {
+    width: min(100%, var(--airp-page-max));
+    margin-inline: auto;
+    padding: 18px clamp(10px, 2.2vw, 24px) 150px;
+    background: transparent !important;
+    scrollbar-gutter: stable;
+}
+
+body.airp-ui-enabled #chat .mes {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 14px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, .56);
+    border-radius: 24px;
+    background: var(--airp-ai-bg);
+    box-shadow:
+        0 12px 32px rgba(81, 119, 154, .07),
+        inset 0 1px 0 rgba(255, 255, 255, .72);
+    backdrop-filter: blur(16px) saturate(1.05);
+    -webkit-backdrop-filter: blur(16px) saturate(1.05);
+}
+
+body.airp-ui-enabled #chat .mes[is_user="true"] {
+    width: min(82%, 720px);
+    margin-left: auto;
+    margin-right: 0;
+    background: var(--airp-user-bg);
+    border-color: rgba(255, 255, 255, .72);
+    border-bottom-right-radius: 9px;
+}
+
+body.airp-ui-enabled #chat .mes[is_user="false"] {
+    border-bottom-left-radius: 9px;
+}
+
+body.airp-ui-enabled #chat .mes_block {
+    min-width: 0;
+}
+
+body.airp-ui-enabled #chat .mes_text {
+    color: var(--airp-text);
+    font-size: 15px;
+    line-height: 1.86;
+    letter-spacing: .012em;
+    overflow-wrap: anywhere;
+}
+
+body.airp-ui-enabled #chat .mes[is_user="true"] .mes_text {
+    line-height: 1.72;
+}
+
+body.airp-ui-enabled #chat .ch_name {
+    margin-bottom: 5px;
+    color: #6485a5;
+}
+
+body.airp-ui-enabled #chat .timestamp,
+body.airp-ui-enabled #chat .mesIDDisplay,
+body.airp-ui-enabled #chat .mes_timer,
+body.airp-ui-enabled #chat .tokenCounterDisplay {
+    color: #9aaebe !important;
+    opacity: .72;
+}
+
+body.airp-ui-enabled #chat .mesAvatarWrapper .avatar {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(83, 117, 149, .10);
+}
+
+/* 操作按钮继续存在，只降低视觉权重 */
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes .mes_buttons,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes .swipe_left,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes .swipe_right {
+    opacity: .18;
+    transition: opacity .18s ease;
+}
+
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes:hover .mes_buttons,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes:hover .swipe_left,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes:hover .swipe_right,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes:focus-within .mes_buttons,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes:focus-within .swipe_left,
+body.airp-ui-enabled.airp-compact-message-controls #chat .mes:focus-within .swipe_right {
+    opacity: .92;
+}
+
+body.airp-ui-enabled #send_form {
+    width: min(calc(100% - 24px), var(--airp-page-max));
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 12px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: 24px;
+    background: rgba(245, 251, 255, .80) !important;
+    box-shadow: 0 16px 42px rgba(67, 103, 137, .14);
+    backdrop-filter: blur(20px) saturate(1.1);
+    -webkit-backdrop-filter: blur(20px) saturate(1.1);
+}
+
+body.airp-ui-enabled #send_textarea {
+    min-height: 44px;
+    border-radius: 18px !important;
+    line-height: 1.55;
+}
+
+body.airp-ui-enabled #top-bar,
+body.airp-ui-enabled #top-settings-holder,
+body.airp-ui-enabled .drawer-content,
+body.airp-ui-enabled .drawer-content.maximized {
+    backdrop-filter: blur(18px) saturate(1.05);
+    -webkit-backdrop-filter: blur(18px) saturate(1.05);
+}
+
+/* ---------- V8 设置页 ---------- */
+.airp-v8-settings-page .airp-v7-settings-card {
+    overflow: hidden;
+}
+
+.airp-v8-settings-page .airp-v7-setting-row strong {
+    letter-spacing: .01em;
+}
+
+/* ---------- 特殊开场组件 ---------- */
+body.airp-ui-enabled #chat .mes.airp-opening-message {
+    background: rgba(248, 252, 255, .78);
+}
+
+.airp-opening-card {
+    margin: 2px 0 18px;
+    width: min(100%, 680px);
+}
+
+.airp-opening-paper {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(24px, 4vw, 42px);
+    border: 1px solid rgba(123, 164, 202, .24);
+    border-radius: 8px;
+    color: #4f667c;
+    background:
+        linear-gradient(rgba(255,255,255,.94), rgba(248,252,255,.94)),
+        repeating-linear-gradient(0deg, transparent 0, transparent 27px, rgba(116,156,193,.035) 28px);
+    box-shadow:
+        0 18px 42px rgba(78, 111, 142, .10),
+        inset 0 0 0 7px rgba(228, 241, 252, .28);
+}
+
+.airp-opening-paper::before {
+    content: "";
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    right: -66px;
+    top: -72px;
+    border: 1px solid rgba(132, 176, 214, .12);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 18px rgba(192, 220, 244, .055);
+}
+
+.airp-opening-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #91a6b9;
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.airp-opening-topline time {
+    flex: 0 0 auto;
+    letter-spacing: .05em;
+}
+
+.airp-opening-issuer {
+    margin-top: 28px;
+    color: #6685a1;
+    font-size: 12px;
+    letter-spacing: .12em;
+}
+
+.airp-opening-paper h2 {
+    margin: 8px 0 12px;
+    color: #405f7b;
+    font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+    font-size: clamp(27px, 5vw, 38px);
+    font-weight: 500;
+    letter-spacing: .16em;
+}
+
+.airp-opening-rule {
+    width: 54px;
+    height: 2px;
+    margin: 18px 0 28px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #8db9e4, rgba(141,185,228,.14));
+}
+
+.airp-opening-recipient {
+    margin-bottom: 14px;
+    color: #5e7489;
+    font-size: 13px;
+}
+
+.airp-opening-body {
+    color: #546c82;
+    font-size: 14px;
+    line-height: 2;
+    white-space: normal;
+}
+
+.airp-opening-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 34px;
+    min-height: 76px;
+    color: #8ca0b2;
+    font-size: 11px;
+}
+
+.airp-opening-seal {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    padding: 8px;
+    border: 2px solid rgba(108, 153, 194, .42);
+    border-radius: 50%;
+    color: rgba(78, 126, 168, .70);
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: center;
+    transform: rotate(-7deg);
+}
+
+/* ---------- AIRP 手机：桌面保持手机壳 ---------- */
+body.airp-responsive-phone #airp-phone-overlay {
+    overscroll-behavior: contain;
+}
+
+/* ---------- 真手机 / 窄屏 ---------- */
+@media (max-width: 720px) {
+    body.airp-ui-enabled #chat {
+        width: 100%;
+        padding: 10px 8px calc(128px + env(safe-area-inset-bottom));
+    }
+
+    body.airp-ui-enabled #chat .mes {
+        margin-bottom: 9px;
+        padding: 10px 10px;
+        border-radius: 20px;
+    }
+
+    body.airp-ui-enabled #chat .mes[is_user="true"] {
+        width: min(88%, 620px);
+        border-bottom-right-radius: 7px;
+    }
+
+    body.airp-ui-enabled #chat .mes[is_user="false"] {
+        border-bottom-left-radius: 7px;
+    }
+
+    body.airp-ui-enabled #chat .mes_text {
+        font-size: 14.5px;
+        line-height: 1.78;
+    }
+
+    body.airp-ui-enabled #chat .mesAvatarWrapper {
+        transform: scale(.92);
+        transform-origin: top center;
+    }
+
+    body.airp-ui-enabled #send_form {
+        width: calc(100% - 12px);
+        bottom: max(6px, env(safe-area-inset-bottom));
+        padding: 6px 7px;
+        border-radius: 20px;
+    }
+
+    /* 触屏不存在 hover，所以消息被点击/聚焦时按钮也要清晰；同时别淡得看不见 */
+    body.airp-ui-enabled.airp-compact-message-controls #chat .mes .mes_buttons,
+    body.airp-ui-enabled.airp-compact-message-controls #chat .mes .swipe_left,
+    body.airp-ui-enabled.airp-compact-message-controls #chat .mes .swipe_right {
+        opacity: .42;
+    }
+
+    body.airp-responsive-phone #airp-phone-overlay {
+        inset: 0 !important;
+        padding: 0 !important;
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        background: rgba(236, 246, 255, .96) !important;
+    }
+
+    body.airp-responsive-phone #airp-phone {
+        width: 100vw !important;
+        max-width: none !important;
+        height: 100dvh !important;
+        max-height: none !important;
+        margin: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    body.airp-responsive-phone #airp-phone-content {
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+    }
+
+    body.airp-responsive-phone .airp-statusbar {
+        padding-left: max(18px, env(safe-area-inset-left));
+        padding-right: max(18px, env(safe-area-inset-right));
+    }
+
+    body.airp-responsive-phone .airp-navbar {
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+    }
+
+    body.airp-responsive-phone .airp-home-indicator {
+        display: none;
+    }
+
+    .airp-opening-paper {
+        padding: 24px 20px;
+    }
+
+    .airp-opening-paper h2 {
+        letter-spacing: .1em;
+    }
+}
+
+@media (max-width: 420px) {
+    body.airp-ui-enabled #chat .mes[is_user="true"] {
+        width: 92%;
+    }
+
+    body.airp-ui-enabled #chat .mesAvatarWrapper {
+        display: none;
+    }
+
+    .airp-opening-topline {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .airp-opening-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+body.airp-ui-enabled #send_form {
+    left: auto !important;
+    transform: none !important;
+}
+/* =========================================================
+   AIRP State v9 · 世界 / 角色工作室
+   直接追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-v9-studio-page {
+    padding-bottom: 28px;
+}
+
+.airp-v9-studio-card {
+    margin-bottom: 14px;
+    padding: 16px;
+    border-radius: 22px;
+}
+
+.airp-v9-studio-card .airp-card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.airp-v9-studio-card .airp-card-heading > i {
+    color: #9bb2c6;
+    font-size: 12px;
+}
+
+.airp-v9-help {
+    margin: 0 0 14px;
+    color: #8da0b2;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+.airp-v9-help strong {
+    color: #6c89a3;
+    font-weight: 600;
+}
+
+.airp-v9-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.airp-v9-studio-page .airp-world-field {
+    margin-bottom: 10px;
+}
+
+.airp-v9-studio-page .airp-world-field input,
+.airp-v9-studio-page .airp-world-field textarea,
+.airp-v9-studio-page .airp-world-field select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.airp-v9-studio-page .airp-world-field textarea {
+    resize: vertical;
+    min-height: 72px;
+}
+
+.airp-v9-readonly-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 10px 0 12px;
+}
+
+.airp-v9-readonly-grid > div {
+    padding: 11px 12px;
+    border: 1px solid rgba(139, 180, 218, .14);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .42);
+}
+
+.airp-v9-readonly-grid span,
+.airp-v9-readonly-grid strong {
+    display: block;
+}
+
+.airp-v9-readonly-grid span {
+    margin-bottom: 4px;
+    color: #9aaabc;
+    font-size: 10px;
+}
+
+.airp-v9-readonly-grid strong {
+    color: #607f9b;
+    font-size: 12px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.airp-v9-character-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.airp-v9-secondary-add {
+    background: rgba(255, 255, 255, .46) !important;
+    color: #7c99b3 !important;
+}
+
+.airp-v9-profile-edit {
+    margin: 10px 0 2px;
+    padding: 7px 11px;
+    border: 1px solid rgba(139, 180, 218, .18);
+    border-radius: 999px;
+    color: #7898b5;
+    background: rgba(255, 255, 255, .52);
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.airp-v9-profile-edit i {
+    margin-right: 4px;
+}
+
+.airp-v9-status-card {
+    margin-top: 12px;
+    padding: 14px 15px;
+    border-radius: 20px;
+}
+
+.airp-v9-status-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 8px 0;
+}
+
+.airp-v9-status-chips span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    border-radius: 999px;
+    color: #718da7;
+    background: rgba(223, 238, 252, .58);
+    font-size: 10px;
+}
+
+.airp-v9-status-card p {
+    margin: 7px 0 0;
+    color: #6e869d;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.airp-v9-status-card .airp-v9-status-note {
+    color: #98a8b7;
+}
+
+.airp-v9-promote-button {
+    width: 100%;
+    margin-top: 4px;
+    padding: 11px 13px;
+    border: 1px solid rgba(124, 169, 209, .22);
+    border-radius: 16px;
+    color: #5f84a5;
+    background: linear-gradient(135deg, rgba(222, 239, 255, .78), rgba(248, 252, 255, .74));
+    box-shadow: 0 8px 20px rgba(87, 124, 158, .07);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.airp-v9-promote-button:disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+.airp-v9-promote-button i {
+    margin-right: 5px;
+}
+
+/* 真实手机上把编辑器从双栏压成单栏，避免输入框太窄。 */
+@media (max-width: 720px) {
+    .airp-v9-form-grid,
+    .airp-v9-readonly-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .airp-v9-studio-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+}
+/* =========================================================
+   AIRP State v10 · World Pack + Social 1.0
+   直接追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-v10-pack-status {
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(232, 242, 251, .72);
+    color: #718ba3;
+}
+
+.airp-v10-pack-status.is-loaded {
+    background: rgba(222, 241, 232, .72);
+    color: #668b78;
+}
+
+.airp-v10-pack-status.is-error {
+    background: rgba(249, 228, 228, .75);
+    color: #a36f73;
+}
+
+.airp-v10-pack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 10px 0 12px;
+}
+
+.airp-v10-pack-grid > div {
+    padding: 10px 11px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .48);
+    border: 1px solid rgba(139, 180, 218, .14);
+}
+
+.airp-v10-pack-grid span,
+.airp-v10-pack-grid strong {
+    display: block;
+}
+
+.airp-v10-pack-grid span {
+    margin-bottom: 3px;
+    font-size: 9px;
+    color: #9aaabb;
+}
+
+.airp-v10-pack-grid strong {
+    font-size: 11px;
+    color: #657f98;
+    overflow-wrap: anywhere;
+}
+
+.airp-v10-pack-error {
+    margin: 8px 0 10px;
+    padding: 9px 10px;
+    border-radius: 12px;
+    background: rgba(249, 228, 228, .62);
+    color: #9a6d72;
+    font-size: 10px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.airp-v10-inline-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.airp-world-save.is-secondary {
+    background: rgba(255,255,255,.54) !important;
+    color: #7894ad !important;
+    box-shadow: none !important;
+}
+
+.airp-v10-legacy-details {
+    margin-bottom: 14px;
+    padding: 13px 14px;
+    border-radius: 18px;
+}
+
+.airp-v10-legacy-details summary {
+    cursor: pointer;
+    color: #7891a8;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.airp-v10-legacy-details[open] summary {
+    margin-bottom: 12px;
+}
+
+.airp-v10-app-badge {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef7f88;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,.94);
+    font-size: 8px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.airp-app-icon {
+    position: relative;
+}
+
+.airp-v10-social-page {
+    padding-bottom: 28px;
+}
+
+.airp-v10-moment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 9px;
+}
+
+.airp-v10-moment-actions button {
+    min-width: 34px;
+    padding: 5px 8px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(230, 240, 249, .62);
+    color: #8198ad;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.airp-v10-moment-actions button.is-active {
+    color: #ca7480;
+    background: rgba(252, 232, 235, .72);
+}
+
+.airp-v10-moment-social {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 13px;
+    background: rgba(238, 245, 251, .58);
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.airp-v10-like-line {
+    color: #7893aa;
+    margin-bottom: 4px;
+}
+
+.airp-v10-like-line i {
+    margin-right: 5px;
+}
+
+.airp-v10-comment-line strong {
+    color: #6987a1;
+    margin-right: 5px;
+}
+
+.airp-v10-comment-line span {
+    color: #73889c;
+}
+
+.airp-v10-inline-compose,
+.airp-v10-chat-compose,
+.airp-v10-forum-compose {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 9px;
+}
+
+.airp-v10-inline-compose input,
+.airp-v10-chat-compose textarea,
+.airp-v10-forum-compose textarea {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    border-radius: 13px;
+    border: 1px solid rgba(139, 180, 218, .18);
+    background: rgba(255,255,255,.65);
+    color: #607a92;
+    box-sizing: border-box;
+    outline: none;
+    resize: none;
+}
+
+.airp-v10-inline-compose button,
+.airp-v10-chat-compose button,
+.airp-v10-forum-compose button,
+.airp-v10-notification-head button {
+    border: 0;
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: rgba(219, 237, 252, .86);
+    color: #6288a8;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.airp-v10-chat-compose {
+    position: sticky;
+    bottom: 0;
+    padding: 9px;
+    border-radius: 17px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.airp-v10-forum-detail {
+    padding-bottom: 26px;
+}
+
+.airp-v10-floor {
+    float: right;
+    color: #a1afbd;
+    font-size: 9px;
+}
+
+.airp-v10-reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.airp-v10-forum-reply {
+    padding: 12px 13px;
+    border-radius: 17px;
+}
+
+.airp-v10-forum-reply-meta {
+    display: flex;
+    gap: 7px;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+
+.airp-v10-forum-reply-meta strong {
+    color: #6886a0;
+    font-size: 11px;
+}
+
+.airp-v10-forum-reply-meta span {
+    color: #a0adba;
+    font-size: 9px;
+}
+
+.airp-v10-forum-reply p {
+    margin: 0;
+    color: #687f94;
+    font-size: 11px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.airp-v10-forum-compose {
+    flex-wrap: wrap;
+    padding: 10px;
+    border-radius: 17px;
+}
+
+.airp-v10-forum-compose textarea {
+    flex-basis: 100%;
+}
+
+.airp-v10-forum-compose label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: auto;
+    color: #8798a8;
+    font-size: 10px;
+}
+
+.airp-v10-notification-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #8395a6;
+    font-size: 10px;
+}
+
+.airp-v10-notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.airp-v10-notification {
+    display: flex;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 17px;
+    opacity: .78;
+}
+
+.airp-v10-notification.is-unread {
+    opacity: 1;
+    box-shadow: inset 3px 0 0 rgba(122, 171, 214, .5);
+}
+
+.airp-v10-notify-icon {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(224, 239, 252, .72);
+    color: #7293af;
+}
+
+.airp-v10-notification strong,
+.airp-v10-notification p,
+.airp-v10-notification span {
+    display: block;
+}
+
+.airp-v10-notification strong {
+    color: #68839b;
+    font-size: 11px;
+}
+
+.airp-v10-notification p {
+    margin: 3px 0;
+    color: #71879a;
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+.airp-v10-notification span {
+    color: #a3afba;
+    font-size: 9px;
+}
+
+.airp-v10-file-field {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.airp-v10-file-field > span,
+.airp-v10-file-field small {
+    display: block;
+}
+
+.airp-v10-file-field > span {
+    margin-bottom: 5px;
+    color: #8598aa;
+    font-size: 10px;
+}
+
+.airp-v10-file-field input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 13px;
+    border: 1px solid rgba(139, 180, 218, .18);
+    background: rgba(255,255,255,.55);
+    color: #72899d;
+    box-sizing: border-box;
+    font-size: 10px;
+}
+
+.airp-v10-file-field small {
+    margin-top: 4px;
+    color: #a2afba;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+    .airp-v10-pack-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .airp-v10-chat-compose {
+        bottom: max(0px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 390px) {
+    .airp-v10-pack-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   AIRP State v10.1 · hotfix
+   追加到现有 style.css 最底部
+   - 私聊输入框固定在聊天页底部
+   - 私聊消息区独立滚动
+   - 世界资料页 / 外置提示词状态的小布局修正
+   ========================================================= */
+
+/* 进入具体私聊时，让 phone content 变成完整的上下结构，而不是普通长页面。 */
+#airp-phone-content.airp-chat-content-mode {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread-page {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    padding-top: 8px !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px 2px 12px !important;
+    scrollbar-width: thin;
+}
+
+/* 有很多消息时，不用 justify-content 把内容挤在底部；滚动位置由 JS 自动拉到底。 */
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread:has(.airp-chat-message:nth-child(8)) {
+    justify-content: flex-start;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-v10-chat-compose {
+    position: relative !important;
+    inset: auto !important;
+    bottom: auto !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: auto 0 0 !important;
+    padding: 9px !important;
+    border-radius: 17px !important;
+    z-index: 5;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-v10-chat-compose textarea {
+    min-height: 36px;
+    max-height: 108px;
+    line-height: 1.45;
+}
+
+/* 世界包页底部两个操作并排，窄屏自动换行。 */
+.airp-v10-world-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+
+.airp-v10-world-actions .airp-world-save {
+    margin: 0 !important;
+    min-width: 0;
+}
+
+@media (max-width: 390px) {
+    .airp-v10-world-actions {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   AIRP State v10.2 · 私聊布局修复
+   直接追加到现有 style.css 最底部
+   目标：消息区独立滚动，输入框始终可见并固定在 AIRP 手机内容区底部。
+   ========================================================= */
+
+/* 私聊页本身不再用 100% 高度 + padding 撑出父容器，改为绝对铺满内容区。 */
+#airp-phone-content.airp-chat-content-mode {
+    position: relative !important;
+    display: block !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread-page {
+    position: absolute !important;
+    inset: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+/* 给底部输入栏预留固定空间。 */
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread {
+    position: absolute !important;
+    inset: 0 0 72px 0 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 12px 12px 10px !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 消息少时自然贴近底部；消息多时仍可正常向上滚。 */
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread > :first-child {
+    margin-top: auto;
+}
+
+/* 输入栏永远固定在私聊内容区底部，不参与消息区高度计算。 */
+#airp-phone-content.airp-chat-content-mode .airp-v10-chat-compose {
+    position: absolute !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 9px !important;
+    border-radius: 17px !important;
+    z-index: 20 !important;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-v10-chat-compose textarea {
+    min-height: 36px !important;
+    max-height: 96px !important;
+    line-height: 1.45 !important;
+}
+
+/* 桌面手机壳底部有 home indicator，给输入栏再留一点视觉距离。 */
+@media (min-width: 721px) {
+    #airp-phone-content.airp-chat-content-mode .airp-v10-chat-compose {
+        bottom: 14px !important;
+    }
+
+    #airp-phone-content.airp-chat-content-mode .airp-chat-thread {
+        bottom: 78px !important;
+    }
+}
+/* =========================================================
+   AIRP v10.3 · 私聊布局最终覆盖
+   消息区 + 底部输入栏，两行 Grid
+   ========================================================= */
+
+#airp-phone-content.airp-chat-content-mode {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+/* 整个私聊页：第一行消息，第二行输入 */
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread-page {
+    position: relative !important;
+    inset: auto !important;
+
+    display: grid !important;
+    grid-template-rows: minmax(0, 1fr) auto !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+
+    margin: 0 !important;
+    padding: 8px 12px max(12px, env(safe-area-inset-bottom)) !important;
+
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* 消息区域 */
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread {
+    position: relative !important;
+    inset: auto !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+
+    padding: 8px 2px 10px !important;
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 消息少时贴近底部，而不是吊在最上面 */
+#airp-phone-content.airp-chat-content-mode
+.airp-chat-thread > :first-child {
+    margin-top: auto !important;
+}
+
+/* 输入栏：正常占 Grid 第二行，不再 absolute / sticky */
+#airp-phone-content.airp-chat-content-mode .airp-v10-chat-compose {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    display: flex !important;
+    align-items: flex-end !important;
+    gap: 7px !important;
+
+    width: 100% !important;
+    min-height: 54px !important;
+
+    margin: 6px 0 0 !important;
+    padding: 8px !important;
+
+    box-sizing: border-box !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+
+    border-radius: 18px !important;
+    z-index: 10 !important;
+
+    flex: none !important;
+}
+
+/* 文本输入框 */
+#airp-phone-content.airp-chat-content-mode
+.airp-v10-chat-compose textarea {
+    display: block !important;
+
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+
+    min-height: 38px !important;
+    max-height: 100px !important;
+
+    margin: 0 !important;
+    padding: 9px 11px !important;
+
+    box-sizing: border-box !important;
+    resize: none !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* 发送按钮保持正常大小 */
+#airp-phone-content.airp-chat-content-mode
+.airp-v10-chat-compose button {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+/* AIRP v10.3 · 私聊结构修复 */
+
+#airp-phone {
+    position: relative !important;
+}
+
+/* 输入栏现在是手机壳一级子元素，不再塞进消息滚动区域 */
+#airp-phone-footer {
+    position: absolute !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 28px !important;
+    z-index: 80 !important;
+    box-sizing: border-box !important;
+    pointer-events: auto !important;
+}
+
+#airp-phone-footer.airp-hidden {
+    display: none !important;
+}
+
+#airp-phone-footer:not(.airp-hidden) {
+    display: block !important;
+}
+
+#airp-phone-footer .airp-v10-chat-compose {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-height: 54px !important;
+    margin: 0 !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+#airp-phone-footer .airp-v10-chat-compose textarea {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    min-height: 38px !important;
+    max-height: 100px !important;
+    margin: 0 !important;
+    padding: 9px 11px !important;
+    box-sizing: border-box !important;
+    resize: none !important;
+}
+
+#airp-phone-footer .airp-v10-chat-compose button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 私聊内容只负责消息 */
+#airp-phone-content.airp-chat-content-mode {
+    position: relative !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread-page {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+#airp-phone-content.airp-chat-content-mode .airp-chat-thread {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 12px 12px 92px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+#airp-phone-content.airp-chat-content-mode
+.airp-chat-thread > :first-child {
+    margin-top: auto !important;
+}
+
+@media (max-width: 720px) {
+    #airp-phone-footer {
+        left: 10px !important;
+        right: 10px !important;
+        bottom: max(14px, env(safe-area-inset-bottom)) !important;
+    }
+
+    #airp-phone-content.airp-chat-content-mode .airp-chat-thread {
+        padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important;
+    }
+}
+/* =========================================================
+   AIRP v10.4 · 社交输入栏修复
+   - 私聊继续使用 #airp-phone-footer
+   - 论坛详情页的回复框也移到独立 footer
+   - 论坛正文独立滚动，底部为回复栏预留空间
+   ========================================================= */
+
+/* 论坛详情页允许独立滚动，不受私聊模式影响。 */
+#airp-phone-content.airp-forum-content-mode {
+    position: relative !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* 给固定在 footer 的论坛回复栏留出空间，避免最后一层被遮住。 */
+#airp-phone-content.airp-forum-content-mode .airp-v10-forum-detail {
+    padding-bottom: 112px !important;
+    box-sizing: border-box !important;
+}
+
+/* footer 里的论坛回复框。 */
+#airp-phone-footer .airp-v10-forum-compose {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-height: 70px !important;
+    margin: 0 !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+#airp-phone-footer .airp-v10-forum-compose textarea {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 38px !important;
+    max-height: 96px !important;
+    margin: 0 !important;
+    padding: 9px 11px !important;
+    box-sizing: border-box !important;
+    resize: none !important;
+}
+
+#airp-phone-footer .airp-v10-forum-compose-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+#airp-phone-footer .airp-v10-forum-compose-row label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    margin-right: auto !important;
+    font-size: 10px !important;
+}
+
+#airp-phone-footer .airp-v10-forum-compose-row button {
+    flex: 0 0 auto !important;
+    min-width: 54px !important;
+    height: 36px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+@media (max-width: 720px) {
+    #airp-phone-content.airp-forum-content-mode .airp-v10-forum-detail {
+        padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+    }
+}
+/* =========================================================
+   AIRP v10.5 · 玩家发布朋友圈 / 论坛帖
+   追加到现有 style.css 最底部
+   ========================================================= */
+
+.airp-v10-social-toolbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+.airp-v10-social-toolbar > span,
+.airp-v10-social-toolbar .airp-social-page-note {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.airp-v10-social-create-button {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.airp-v10-social-create-page {
+    width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+.airp-v10-social-create-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+}
+
+.airp-v10-create-note {
+    margin: 6px 0 14px;
+    opacity: .68;
+    line-height: 1.55;
+    white-space: normal;
+}
+
+.airp-v10-social-create-card textarea,
+.airp-v10-social-create-card input[type="text"] {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 11px 12px;
+    border-radius: 14px;
+    resize: vertical;
+    font: inherit;
+}
+
+.airp-v10-social-create-card textarea {
+    min-height: 132px;
+    max-height: 45dvh;
+}
+
+.airp-v10-create-field {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+.airp-v10-create-field > span {
+    display: block;
+    margin: 0 0 6px;
+    font-size: .9em;
+    opacity: .72;
+}
+
+.airp-v10-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.airp-v10-create-actions > span,
+.airp-v10-anonymous-toggle {
+    min-width: 0;
+    font-size: .88em;
+    opacity: .72;
+    white-space: normal;
+}
+
+.airp-v10-create-actions button {
+    flex: 0 0 auto;
+    min-width: 74px;
+    min-height: 38px;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.airp-v10-anonymous-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (max-width: 720px) {
+    .airp-v10-social-toolbar {
+        align-items: center;
+    }
+
+    .airp-v10-social-toolbar > span {
+        font-size: .9em;
+    }
+
+    .airp-v10-social-create-card {
+        padding: 14px;
+    }
+
+    .airp-v10-create-actions {
+        align-items: center;
+    }
+}
+/* =========================================================
+   AIRP v11 · 社交发布页视觉整理 + 安全网
+   追加到现有 style.css 最底部
+   ========================================================= */
+
+/* ---------- 朋友圈 / 论坛首页头部 ---------- */
+.airp-v11-social-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    margin: 2px 0 14px;
+    padding: 0 2px;
+    box-sizing: border-box;
+}
+
+.airp-v11-social-head > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.airp-v11-social-head .airp-social-page-note {
+    margin-top: 3px;
+    font-size: .88em;
+    opacity: .58;
+    line-height: 1.45;
+}
+
+.airp-v11-create-icon {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(92, 145, 202, .16);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .58);
+    color: rgba(39, 79, 117, .9);
+    box-shadow: 0 8px 22px rgba(72, 112, 156, .09);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+.airp-v11-create-icon:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, .78);
+    box-shadow: 0 10px 26px rgba(72, 112, 156, .13);
+}
+
+/* 旧版大按钮不再抢视觉 */
+.airp-v10-social-create-button {
+    box-shadow: none;
+}
+
+/* ---------- 发布页 ---------- */
+.airp-v11-create-page {
+    padding: 14px 14px 26px !important;
+    box-sizing: border-box;
+}
+
+.airp-v11-social-editor {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 17px 16px 15px;
+    border: 1px solid rgba(255, 255, 255, .7);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .50);
+    box-shadow: 0 18px 42px rgba(75, 113, 154, .08);
+    overflow: hidden;
+}
+
+.airp-v11-editor-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.airp-v11-editor-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
+    border-radius: 14px !important;
+    font-size: .92em;
+}
+
+.airp-v11-editor-identity > div:last-child {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 1px;
+}
+
+.airp-v11-editor-identity strong {
+    font-size: .96em;
+    font-weight: 650;
+}
+
+.airp-v11-editor-identity span {
+    font-size: .78em;
+    opacity: .48;
+}
+
+.airp-v11-social-editor textarea,
+.airp-v11-social-editor input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    color: inherit;
+    box-shadow: none !important;
+    font: inherit;
+}
+
+.airp-v11-social-editor textarea {
+    min-height: 190px;
+    max-height: 52dvh;
+    padding: 8px 2px 12px !important;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.airp-v11-social-editor textarea::placeholder,
+.airp-v11-social-editor input::placeholder {
+    opacity: .38;
+}
+
+.airp-v11-editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(86, 126, 166, .10);
+}
+
+.airp-v11-visibility,
+.airp-v11-editor-meta {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .82em;
+    opacity: .62;
+}
+
+.airp-v11-publish-button {
+    flex: 0 0 auto;
+    min-width: 68px;
+    min-height: 36px;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 13px;
+    background: rgba(100, 160, 218, .18);
+    color: rgba(33, 76, 116, .95);
+    font-weight: 650;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.airp-v11-publish-button:hover {
+    background: rgba(100, 160, 218, .27);
+}
+
+/* ---------- 论坛发布页 ---------- */
+.airp-v11-forum-editor {
+    padding-top: 15px;
+}
+
+.airp-v11-editor-kicker {
+    margin-bottom: 6px;
+    font-size: .76em;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .42;
+}
+
+.airp-v11-title-input {
+    min-height: 46px;
+    padding: 4px 2px 10px !important;
+    border-bottom: 1px solid rgba(86, 126, 166, .12) !important;
+    border-radius: 0 !important;
+    font-size: 1.08em !important;
+    font-weight: 650 !important;
+}
+
+.airp-v11-forum-editor textarea {
+    min-height: 235px;
+    padding-top: 14px !important;
+}
+
+.airp-v11-editor-meta {
+    flex-wrap: wrap;
+}
+
+.airp-v11-anonymous-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 28px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(104, 148, 193, .08);
+    cursor: pointer;
+}
+
+.airp-v11-anonymous-chip input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+}
+
+/* ---------- V11 安全网 ---------- */
+.airp-v11-safety-help {
+    margin: 2px 0 12px;
+    font-size: .86em;
+    line-height: 1.55;
+    opacity: .62;
+}
+
+.airp-v11-safety-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.airp-v11-safety-grid button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid rgba(83, 129, 177, .12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .38);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.airp-v11-safety-grid button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, .58);
+}
+
+.airp-v11-safety-grid button:disabled {
+    opacity: .34;
+    cursor: default;
+}
+
+.airp-v11-safety-grid i {
+    width: 18px;
+    text-align: center;
+    opacity: .68;
+}
+
+.airp-v11-safety-status {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3px 10px;
+    align-items: baseline;
+    margin-top: 11px;
+    padding: 10px 11px;
+    border-radius: 14px;
+    background: rgba(93, 138, 184, .06);
+}
+
+.airp-v11-safety-status > span {
+    opacity: .65;
+    font-size: .84em;
+}
+
+.airp-v11-safety-status > strong {
+    font-size: .86em;
+}
+
+.airp-v11-safety-status > small {
+    grid-column: 1 / -1;
+    opacity: .46;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.airp-v11-safety-status.is-ok {
+    background: rgba(101, 168, 132, .07);
+}
+
+.airp-v11-safety-status.has-issues {
+    background: rgba(196, 137, 91, .08);
+}
+
+@media (max-width: 720px) {
+    .airp-v11-create-page {
+        padding: 12px 11px calc(24px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .airp-v11-social-editor {
+        padding: 15px 14px 13px;
+        border-radius: 20px;
+    }
+
+    .airp-v11-social-editor textarea {
+        min-height: 175px;
+    }
+
+    .airp-v11-forum-editor textarea {
+        min-height: 220px;
+    }
+
+    .airp-v11-safety-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   AIRP v12 · 主聊天阅读模式
+   - 去气泡化
+   - AI 与玩家均作为正文
+   - 玩家正文轻微右移，但保持长文可读性
+   - 不影响对白内部已有颜色
+   ========================================================= */
+
+
+/* ---------- 主阅读区域 ---------- */
+
+body.airp-ui-enabled #chat {
+    width: min(100%, 920px);
+    margin-inline: auto;
+
+    padding:
+        24px
+        clamp(18px, 3vw, 34px)
+        150px;
+
+    background: transparent !important;
+}
+
+
+/* ---------- 所有消息：取消卡片 / 气泡 ---------- */
+
+body.airp-ui-enabled #chat .mes {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin:
+        0
+        0
+        28px;
+
+    padding: 0;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+
+/* ---------- 去掉聊天头像 ---------- */
+
+body.airp-ui-enabled #chat .mesAvatarWrapper {
+    display: none !important;
+}
+
+
+/* ---------- 正文容器 ---------- */
+
+body.airp-ui-enabled #chat .mes_block {
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* ---------- 默认隐藏发送者名称 ---------- */
+/* 保留消息本身，不做“角色气泡”感 */
+
+body.airp-ui-enabled #chat .ch_name {
+    display: none !important;
+}
+
+
+/* ---------- 时间 / token / 楼层等退后 ---------- */
+
+body.airp-ui-enabled #chat .timestamp,
+body.airp-ui-enabled #chat .mesIDDisplay,
+body.airp-ui-enabled #chat .mes_timer,
+body.airp-ui-enabled #chat .tokenCounterDisplay {
+    color: #9cabb9 !important;
+    opacity: .42;
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   AI 正文
+   ========================================================= */
+
+body.airp-ui-enabled #chat .mes[is_user="false"] {
+    width: 100%;
+
+    margin-left: 0;
+    margin-right: auto;
+
+    padding:
+        0
+        4px
+        4px
+        0;
+}
+
+
+body.airp-ui-enabled #chat .mes[is_user="false"] .mes_block {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+body.airp-ui-enabled #chat .mes[is_user="false"] .mes_text {
+    width: 100%;
+
+    color: #506b84;
+
+    font-size: 15.5px;
+    line-height: 1.9;
+    letter-spacing: .015em;
+
+    text-align: left;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+
+/* =========================================================
+   玩家正文
+   ========================================================= */
+
+/*
+   不是气泡。
+   整个文本区域稍微向右收，
+   但正文内部仍然左对齐，方便写长动作、心理、对白。
+*/
+
+body.airp-ui-enabled #chat .mes[is_user="true"] {
+    width: 100%;
+    max-width: 100%;
+
+    margin:
+        4px
+        0
+        30px;
+
+    padding: 0;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+
+body.airp-ui-enabled #chat .mes[is_user="true"] .mes_block {
+    width: min(88%, 760px);
+
+    margin-left: auto !important;
+    margin-right: 0 !important;
+
+    padding:
+        1px
+        13px
+        1px
+        18px !important;
+
+    border-right:
+        1px solid
+        rgba(128, 174, 214, .30);
+}
+
+
+body.airp-ui-enabled #chat .mes[is_user="true"] .mes_text {
+    color: #7089a1;
+
+    font-size: 14.5px;
+    line-height: 1.82;
+    letter-spacing: .012em;
+
+    text-align: left;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+
+/* ---------- Markdown 段落更接近小说正文 ---------- */
+
+body.airp-ui-enabled #chat .mes_text p {
+    margin:
+        0
+        0
+        .92em;
+}
+
+
+body.airp-ui-enabled #chat .mes_text p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ---------- 引用不要重新变成大卡片 ---------- */
+
+body.airp-ui-enabled #chat .mes_text blockquote {
+    margin:
+        1em
+        0;
+
+    padding:
+        2px
+        0
+        2px
+        14px;
+
+    border-left:
+        1px solid
+        rgba(130, 172, 210, .34);
+
+    color: #71889e;
+
+    background: transparent;
+}
+
+
+/* ---------- 分割线降低存在感 ---------- */
+
+body.airp-ui-enabled #chat .mes_text hr {
+    width: 54%;
+
+    margin:
+        26px
+        auto;
+
+    border: 0;
+    border-top:
+        1px solid
+        rgba(128, 163, 196, .16);
+}
+
+
+/* =========================================================
+   消息按钮
+   ========================================================= */
+
+/*
+   编辑 / 删除 / swipe 等功能保留，
+   但正文阅读时尽量不抢视觉。
+*/
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes .mes_buttons,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes .swipe_left,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes .swipe_right {
+    opacity: .14;
+}
+
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes:hover .mes_buttons,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes:hover .swipe_left,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes:hover .swipe_right,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes:focus-within .mes_buttons,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes:focus-within .swipe_left,
+
+body.airp-ui-enabled.airp-compact-message-controls
+#chat .mes:focus-within .swipe_right {
+    opacity: .78;
+}
+
+
+/* =========================================================
+   手机端
+   ========================================================= */
+
+@media (max-width: 720px) {
+
+    body.airp-ui-enabled #chat {
+        width: 100%;
+
+        padding:
+            20px
+            16px
+            calc(
+                132px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+
+    body.airp-ui-enabled #chat .mes {
+        margin-bottom: 25px;
+        padding: 0;
+
+        border-radius: 0 !important;
+    }
+
+
+    /* AI 正文占主要阅读宽度 */
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="false"] {
+        width: 100%;
+
+        padding-right: 2px;
+    }
+
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="false"]
+    .mes_text {
+        font-size: 15px;
+        line-height: 1.88;
+    }
+
+
+    /* 玩家正文轻微向右 */
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="true"] {
+        width: 100%;
+
+        margin-bottom: 27px;
+    }
+
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="true"]
+    .mes_block {
+        width: 89%;
+
+        margin-left: auto !important;
+
+        padding:
+            0
+            11px
+            0
+            14px !important;
+    }
+
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="true"]
+    .mes_text {
+        font-size: 14.5px;
+        line-height: 1.8;
+    }
+
+
+    /* 触屏没有 hover，操作按钮不要完全消失 */
+
+    body.airp-ui-enabled.airp-compact-message-controls
+    #chat .mes .mes_buttons,
+
+    body.airp-ui-enabled.airp-compact-message-controls
+    #chat .mes .swipe_left,
+
+    body.airp-ui-enabled.airp-compact-message-controls
+    #chat .mes .swipe_right {
+        opacity: .28;
+    }
+}
+
+
+/* ---------- 很窄的手机 ---------- */
+
+@media (max-width: 420px) {
+
+    body.airp-ui-enabled #chat {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="true"]
+    .mes_block {
+        width: 91%;
+    }
+}
+/* =========================================================
+   AIRP v12.1 · 桌面正文宽度修复
+   ========================================================= */
+
+body.airp-ui-enabled #chat {
+    box-sizing: border-box !important;
+    max-width: 920px;
+}
+
+/* 消息自身也统一使用 border-box，避免内部宽度溢出 */
+body.airp-ui-enabled #chat .mes,
+body.airp-ui-enabled #chat .mes_block,
+body.airp-ui-enabled #chat .mes_text {
+    box-sizing: border-box;
+}
+/* =========================================================
+   AIRP v12.2 · 正文右侧截断强制修复
+   ========================================================= */
+
+/* AI：不要再强制内部容器 width:100%，
+   给右侧固定留出安全空间 */
+body.airp-ui-enabled
+#chat
+.mes[is_user="false"]
+.mes_block {
+    width: auto !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 28px !important;
+
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+
+/* 正文本身跟随父容器自然换行 */
+body.airp-ui-enabled
+#chat
+.mes_text {
+    width: auto !important;
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+}
+
+
+/* 玩家侧也给最右边留一点空间，
+   但继续保持右偏排版 */
+body.airp-ui-enabled
+#chat
+.mes[is_user="true"]
+.mes_block {
+    max-width: calc(100% - 18px) !important;
+
+    margin-right: 12px !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* 手机端不用留得太宽 */
+@media (max-width: 720px) {
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="false"]
+    .mes_block {
+        margin-right: 18px !important;
+    }
+
+    body.airp-ui-enabled
+    #chat
+    .mes[is_user="true"]
+    .mes_block {
+        max-width: calc(100% - 12px) !important;
+        margin-right: 6px !important;
+    }
+}
+/* V14: compact controls for contacts, recovery and event history. */
+.airp-trace, .airp-save-banner { margin: 14px 0; padding: 14px; border-radius: 16px; overflow-wrap: anywhere; }
+.airp-trace summary { cursor: pointer; font-weight: 600; }
+.airp-trace button, .airp-save-banner button { display: block; width: 100%; margin: 8px 0; padding: 10px; text-align: left; border: 1px solid var(--airp-border, rgba(128,128,128,.25)); border-radius: 10px; color: inherit; background: transparent; cursor: pointer; }
+.airp-trace p { margin: 10px 0; line-height: 1.6; }
+.airp-trace-label { margin-top: 12px; font-weight: 600; }
+.airp-save-banner { border: 1px solid #b8860b; background: rgba(184,134,11,.12); }
+.airp-save-banner p { margin: 0; }
+.airp-trace-link, .airp-contact-label button { border: 0; background: transparent; color: inherit; opacity: .72; font-size: 12px; cursor: pointer; padding: 5px 0; }
+.airp-contact-label { margin: 8px 0; font-size: 12px; opacity: .8; }
+.airp-profile-actions { flex-wrap: wrap; }
+#airp-phone-overlay button:disabled { opacity: .45; cursor: default; }
+.airp-v10-notification[role="button"] { cursor: pointer; }
