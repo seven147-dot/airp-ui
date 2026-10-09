@@ -6127,6 +6127,71 @@ body.airp-ui-enabled
     margin: 0;
 }
 
+/* 来源事件是可回看的上一环，和传播记录共用玻璃卡片层级。 */
+#airp-phone-overlay .airp-event-source-box {
+    box-sizing: border-box;
+    min-width: 0;
+    margin-top: 13px;
+    padding: 11px 12px;
+    border: 1px solid rgba(255, 255, 255, .78);
+    border-radius: 17px;
+    background: linear-gradient(135deg, rgba(243, 249, 255, .66), rgba(223, 239, 253, .42));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
+    overflow-wrap: anywhere;
+}
+
+#airp-phone-overlay .airp-event-source-box > span {
+    display: block;
+    color: #7895b1;
+    font-size: 9px;
+    font-weight: 650;
+    line-height: 1.6;
+}
+
+#airp-phone-overlay .airp-event-source-box > button {
+    position: relative;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    margin: 7px 0 0;
+    padding: 10px 28px 10px 11px;
+    border: 1px solid rgba(255, 255, 255, .84);
+    border-radius: 13px;
+    color: #527da6;
+    background: linear-gradient(135deg, rgba(234, 245, 255, .86), rgba(213, 233, 252, .68));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75);
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 550;
+    line-height: 1.65;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease;
+}
+
+#airp-phone-overlay .airp-event-source-box > button::after {
+    content: "";
+    position: absolute;
+    top: calc(50% - 3px);
+    right: 12px;
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid #8eabc5;
+    border-bottom: 1.5px solid #8eabc5;
+    transform: rotate(-45deg);
+}
+
+#airp-phone-overlay .airp-event-source-box p {
+    margin: 5px 0 0;
+    color: #66839d;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
 #airp-phone-overlay .airp-save-banner {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6221,11 +6286,11 @@ body.airp-ui-enabled
     cursor: pointer;
 }
 
-#airp-phone-overlay :is(.airp-trace button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button, .airp-profile-action):active:not(:disabled) {
+#airp-phone-overlay :is(.airp-trace button, .airp-event-source-box > button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button, .airp-profile-action):active:not(:disabled) {
     transform: scale(.98);
 }
 
-#airp-phone-overlay :is(.airp-trace summary, .airp-trace button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button, .airp-profile-action, .airp-v10-notification[role="button"]):focus-visible {
+#airp-phone-overlay :is(.airp-trace summary, .airp-trace button, .airp-event-source-box > button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button, .airp-profile-action, .airp-v10-notification[role="button"]):focus-visible {
     outline: 2px solid #8dbcf1;
     outline-offset: 3px;
 }
@@ -6238,7 +6303,7 @@ body.airp-ui-enabled
 }
 
 @media (hover: hover) {
-    #airp-phone-overlay :is(.airp-trace button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button):hover:not(:disabled) {
+    #airp-phone-overlay :is(.airp-trace button, .airp-event-source-box > button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button):hover:not(:disabled) {
         color: #527da6;
         background: rgba(239, 248, 255, .95);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 5px 14px rgba(87, 139, 190, .1);
@@ -6261,7 +6326,7 @@ body.airp-ui-enabled
 
 @media (prefers-reduced-motion: reduce) {
     #airp-phone-overlay .airp-trace summary::after,
-    #airp-phone-overlay :is(.airp-trace button, .airp-save-banner button, .airp-trace-link) {
+    #airp-phone-overlay :is(.airp-trace button, .airp-event-source-box > button, .airp-save-banner button, .airp-trace-link) {
         transition: none;
     }
 }

@@ -1,6 +1,6 @@
-import { buildAirpStateTrackerPrompt } from "./prompts.js?v=0.9.0";
-import { assertSafeObject, validateDelta, diffState, applyPatch, checkpointSnapshot, balancedText } from "./airp-core.js?v=0.9.0";
-import { readBackup, writeBackup } from "./airp-storage.js?v=0.9.0";
+import { buildAirpStateTrackerPrompt } from "./prompts.js?v=0.9.2";
+import { assertSafeObject, validateDelta, diffState, applyPatch, checkpointSnapshot, balancedText } from "./airp-core.js?v=0.9.2";
+import { readBackup, writeBackup } from "./airp-storage.js?v=0.9.2";
 
 const MODULE_NAME = "AIRP UI";
 const AIRP_KEY = "airp";
@@ -1804,6 +1804,57 @@ function finishExposure(state, exposure, outcome, interpretation = "") {
     state.pendingExposures = state.pendingExposures.filter(item => item.id !== exposure.id);
 }
 
+// New social items can be referenced before their generated event IDs are known.
+// Retry only unresolved entries when those refs become available, not all updates.
+function applyInformationDelta(state, delta, refs, processed) {
+    for (const item of (delta.exposures ?? []).slice(0, 40)) {
+        if (processed.has(item)) continue;
+        const eventId = resolveEventRef(state, item.eventId, refs) ?? resolveEventRef(state, item.eventRef, refs);
+        const exposure = item.exposureId
+            ? getPendingExposureById(state, item.exposureId)
+            : eventId ? getPendingExposure(state, eventId, item.characterId) : null;
+        if (!exposure) continue;
+        processed.add(item);
+        const outcome = String(item.outcome ?? "defer");
+        if (outcome === "missed") {
+            finishExposure(state, exposure, "missed", truncateText(item.interpretation || item.reason || "", 500));
+        } else if (outcome === "seen") {
+            const interpretation = truncateText(item.interpretation ?? "", 500);
+            finishExposure(state, exposure, "seen", interpretation);
+            setCharacterKnowledge(state, exposure.characterId, exposure.eventId, {
+                source: exposure.channel,
+                certainty: item.certainty ?? exposure.certainty,
+                interpretation,
+                learnedAt: state.world.datetime || getEventById(state, exposure.eventId)?.time || "",
+            });
+        } else if (outcome === "defer") {
+            exposure.deferReason = truncateText(item.reason || item.interpretation || "尚未到合理的阅读时机", 500);
+            exposure.lastCheckedAt = new Date().toISOString();
+        }
+    }
+    for (const item of (delta.knowledge ?? []).slice(0, 40)) {
+        if (processed.has(item)) continue;
+        const eventId = resolveEventRef(state, item.eventId, refs) ?? resolveEventRef(state, item.eventRef, refs);
+        const characterId = String(item.characterId ?? "");
+        if (!state.characters[characterId] || !eventId) continue;
+        processed.add(item);
+        if (item.known === false) removeCharacterKnowledge(state, characterId, eventId);
+        else setCharacterKnowledge(state, characterId, eventId, {
+            source: item.source,
+            certainty: item.certainty,
+            learnedAt: item.learnedAt ?? state.world.datetime,
+            interpretation: truncateText(item.interpretation ?? "", 500),
+            triggerReaction: item.triggerReaction !== false,
+        });
+    }
+}
+
+function registerExecutionRefs(item, result, eventRefs, artifactRefs) {
+    if (!item.ref || !result?.event) return;
+    eventRefs.set(String(item.ref), result.event.id);
+    if (result.artifact?.id) artifactRefs.set(String(item.ref), result.artifact.id);
+}
+
 function updateProfileFromModel(character, incoming = {}, source = "model") {
     character.profileMeta ??= { locked: {}, sources: {} };
     for (const key of ["handle", "signature", "identity", "grade", "department", "organization", "background", "bio"]) {
@@ -3196,28 +3247,32 @@ function buildAirpContextBlock(state) {
     }
     lines.push(`[AIRP SOCIAL GENERATION] enabled=${state.settings.socialGenerationEnabled !== false}; maxNewItems=${state.settings.maxSocialPerTurn ?? 3}; lastGenerationTime=${state.runtime.lastSocialGenerationTime || "无"}`);
 
-    const pendingExposures = (state.pendingExposures ?? []).slice(0, 10);
+    const pendingExposures = [...(state.pendingExposures ?? [])]
+        .sort((a, b) => String(a.lastCheckedAt || "").localeCompare(String(b.lastCheckedAt || ""))).slice(0, 20);
     if (pendingExposures.length) {
-        lines.push("[AIRP PENDING EXPOSURES]");
+        lines.push(`[AIRP PENDING EXPOSURES] total=${state.pendingExposures.length}; 以下条目由模型判断，不要求玩家点确认`);
         for (const exposure of pendingExposures) {
             const event = getEventById(state, exposure.eventId);
             lines.push(`- exposureId=${exposure.id} | characterId=${exposure.characterId} | eventId=${exposure.eventId} | channel=${exposure.channel}`);
             if (event) lines.push(`  event=${truncateText(event.publicSummary || event.summary, 500)}`);
+            if (exposure.deferReason) lines.push(`  previousDeferReason=${truncateText(exposure.deferReason, 300)}`);
         }
-        lines.push("");
+        lines.push("逐条输出 seen / missed / defer；defer 必须说明时机原因。seen 后同轮用 reactions 决定反应或明确无明显反应。不要把没有填写当作已经处理。\n");
     }
 
     const pendingReactions = (state.reactions ?? [])
         .filter(reaction => reaction.status === "pending")
-        .slice(0, 10);
+        .sort((a, b) => String(a.lastCheckedAt || "").localeCompare(String(b.lastCheckedAt || "")))
+        .slice(0, 20);
     if (pendingReactions.length) {
         lines.push("[AIRP PENDING REACTIONS]");
         for (const reaction of pendingReactions) {
             const event = getEventById(state, reaction.eventId);
             lines.push(`- reactionId=${reaction.id} | characterId=${reaction.characterId} | eventId=${reaction.eventId} | source=${reaction.source}`);
             if (event) lines.push(`  event=${truncateText(event.publicSummary || event.summary, 500)}`);
+            if (reaction.deferReason) lines.push(`  previousDeferReason=${truncateText(reaction.deferReason, 300)}`);
         }
-        lines.push("");
+        lines.push("逐条决定内部反应、status=none（无明显反应）或 status=deferred（必须有 reason）；情绪已经确定但行动延迟时，先记录反应，再用 action.timing=later。\n");
     }
 
     const pendingActions = (state.actions ?? [])
@@ -3382,22 +3437,34 @@ function createPendingActionFromModel(state, item = {}) {
     return action;
 }
 
-function applySocialDelta(state, delta, refs, rejected) {
+function applySocialDelta(state, delta, refs, rejected, artifactRefs = new Map(), onExecuted = () => {}) {
     const maximum = Math.min(5, Math.max(0, Number(state.settings.maxSocialPerTurn) || 3));
     const incoming = (delta.social ?? []).filter(item => state.settings.socialGenerationEnabled !== false || !["moments", "forum"].includes(item.type) || item.eventId || item.eventRef).slice(0, maximum);
     for (const item of incoming) {
         const actorId = item.authorId ?? item.actorId;
         if (!state.characters[actorId] || state.characters[actorId].active === false || !["private_chat", "moments", "forum", "moment_comment", "moment_like", "forum_reply"].includes(item.type)) { rejected.push("social:invalid-author-or-type"); continue; }
         const eventId = resolveEventRef(state, item.eventId ?? item.eventRef, refs);
+        if ((item.eventId || item.eventRef) && !eventId) { rejected.push(`social:${actorId}:unknown-source-event`); continue; }
         if (eventId && !characterKnowsEvent(state, actorId, eventId)) { rejected.push(`social:${actorId}:unknown-event`); continue; }
+        if (item.ref && refs.has(String(item.ref))) { rejected.push(`social:${actorId}:duplicate-ref`); continue; }
+        const targetArtifactId = item.targetArtifactId || artifactRefs.get(String(item.targetArtifactRef ?? ""));
         const execution = item.execute ?? item;
-        const socialKey = `${actorId}:${item.type}:${state.world.datetime}:${hashString(String(execution.text ?? "") + String(item.targetArtifactId ?? ""))}`;
-        if (state.actions.some(action => action.socialKey === socialKey)) continue;
-        const action = createPendingActionFromModel(state, { ...item, note: item.note || execution.text || "", actorId, eventId, timing: item.timing ?? "now" });
+        const socialKey = `${actorId}:${item.type}:${state.world.datetime}:${hashString(String(execution.text ?? "") + String(targetArtifactId ?? ""))}`;
+        const existing = state.actions.find(action => action.socialKey === socialKey);
+        if (existing) {
+            if (existing.executedEventId) {
+                registerExecutionRefs(item, {event: {id: existing.executedEventId}, artifact: {id: existing.executedArtifactId}}, refs, artifactRefs);
+                onExecuted();
+            }
+            continue;
+        }
+        const action = createPendingActionFromModel(state, { ...item, targetArtifactId, note: item.note || execution.text || "", actorId, eventId, timing: item.timing ?? "now" });
         if (!action) continue;
         action.socialKey = socialKey;
         if (action.timing === "now") {
-            executeActionInState(state, action.id, { text: truncateText(execution.text ?? "", 1200), title: truncateText(execution.title ?? "", 160), anonymous: Boolean(execution.anonymous), time: state.world.datetime });
+            const result = executeActionInState(state, action.id, { text: truncateText(execution.text ?? "", 1200), title: truncateText(execution.title ?? "", 160), anonymous: Boolean(execution.anonymous), time: state.world.datetime });
+            registerExecutionRefs(item, result, refs, artifactRefs);
+            onExecuted();
             if (action.status !== "done") rejected.push(`social:${action.id}:${action.lastError || "missing-content"}`);
         }
     }
@@ -4173,6 +4240,8 @@ async function applyStateDelta(delta = {}, options = {}) {
     delta = deepCloneAirp(validateDelta(delta));
 
     const eventRefMap = new Map();
+    const artifactRefMap = new Map();
+    const processedInformation = new Set();
     const rejected = [];
     const supported = new Set(["world", "characterStatus", "events", "exposures", "knowledge", "memories", "relationChanges", "reactions", "actions", "characterRelations", "npcs", "profileUpdates", "friendships", "social", "privateMessageUpdates", "characterInitializations"]);
     for (const key of Object.keys(delta)) if (!supported.has(key)) rejected.push(`unsupported:${key}`);
@@ -4241,54 +4310,56 @@ async function applyStateDelta(delta = {}, options = {}) {
         }
     }
 
-    // 先处理上一轮留下的“可能看到”。
-    if (Array.isArray(delta.exposures)) {
-        for (const item of delta.exposures.slice(0, 20)) {
-            const exposure = getPendingExposureById(state, item?.exposureId);
-            if (!exposure) continue;
-
-            const outcome = String(item.outcome ?? "defer");
-            if (outcome === "missed") {
-                finishExposure(state, exposure, "missed", item.interpretation ?? "");
-                continue;
-            }
-
-            if (outcome === "seen") {
-                finishExposure(state, exposure, "seen", item.interpretation ?? "");
-                const event = getEventById(state, exposure.eventId);
-                setCharacterKnowledge(state, exposure.characterId, exposure.eventId, {
-                    source: exposure.channel,
-                    certainty: item.certainty ?? exposure.certainty,
-                    interpretation: truncateText(item.interpretation ?? "", 500),
-                    learnedAt: state.world.datetime || event?.time || "",
-                });
-            }
-        }
-    }
-
-    if (Array.isArray(delta.knowledge)) {
-        for (const item of delta.knowledge.slice(0, 24)) {
-            const characterId = String(item?.characterId ?? "");
-            const eventId = resolveEventRef(state, item?.eventId, eventRefMap)
-                ?? resolveEventRef(state, item?.eventRef, eventRefMap);
-            if (!state.characters[characterId] || !eventId) continue;
-
-            if (item.known === false) {
-                removeCharacterKnowledge(state, characterId, eventId);
-            } else {
-                setCharacterKnowledge(state, characterId, eventId, {
-                    source: item.source,
-                    certainty: item.certainty,
-                    learnedAt: item.learnedAt ?? state.world.datetime,
-                    interpretation: truncateText(item.interpretation ?? "", 500),
-                    triggerReaction: item.triggerReaction !== false,
-                });
-            }
-        }
-    }
+    applyInformationDelta(state, delta, eventRefMap, processedInformation);
 
     applyFriendships(state, delta, eventRefMap, rejected);
     for (const eventId of eventRefMap.values()) { const event = getEventById(state, eventId); if (event?.channel === "moments") createPropagationCandidates(state, event); }
+
+    // Publish social content before evaluating its readers and reactions.
+    if (Array.isArray(delta.characterRelations)) {
+        for (const item of delta.characterRelations.slice(0, 12)) {
+            const ids = item?.characterIds;
+            if (!Array.isArray(ids) || ids.length !== 2) continue;
+            if (ids[0] === ids[1]) { rejected.push("relationship:self"); continue; }
+            if (!state.characters[ids[0]] || !state.characters[ids[1]]) continue;
+
+            const key = getRelationKey(ids[0], ids[1]);
+            const relationship = getRelationshipSnapshot(state, ids[0], ids[1]);
+            if (typeof item.friendship === "boolean") relationship.friendship = item.friendship;
+            if (item.source) relationship.source = truncateText(item.source, 500);
+
+            if (Array.isArray(item.tags)) {
+                relationship.tags = [...new Set(item.tags.map(tag => truncateText(String(tag).trim(), 40)).filter(Boolean))].slice(0, 10);
+            }
+
+            if (item.summary !== undefined) {
+                relationship.summary = truncateText(String(item.summary ?? ""), 500);
+            }
+
+            if (item.perspectives && typeof item.perspectives === "object") {
+                for (const characterId of relationship.characterIds) {
+                    const incoming = item.perspectives[characterId];
+                    if (!incoming) continue;
+
+                    if (incoming.attitudeDelta !== undefined) {
+                        const before = clampSigned(relationship.perspectives[characterId].attitude ?? 0);
+                        const deltaValue = Math.max(-10, Math.min(10, Number(incoming.attitudeDelta) || 0));
+                        relationship.perspectives[characterId].attitude = clampSigned(before + deltaValue);
+                    } else if (incoming.attitude !== undefined) {
+                        relationship.perspectives[characterId].attitude = clampSigned(incoming.attitude);
+                    }
+
+                    if (incoming.impression !== undefined) {
+                        relationship.perspectives[characterId].impression = truncateText(String(incoming.impression ?? ""), 500);
+                    }
+                }
+            }
+
+            state.characterRelations[key] = relationship;
+        }
+    }
+
+    applySocialDelta(state, delta, eventRefMap, rejected, artifactRefMap, () => applyInformationDelta(state, delta, eventRefMap, processedInformation));
 
     // V12：只把跨多场景仍值得保留的信息写入长期记忆。
     if (Array.isArray(delta.memories)) {
@@ -4374,7 +4445,14 @@ async function applyStateDelta(delta = {}, options = {}) {
             }
             if (!reaction || reaction.status !== "pending") continue;
 
+            if (item.status === "deferred" || item.status === "pending") {
+                reaction.deferReason = truncateText(item.reason || item.summary || "等待合适的反应时机", 500);
+                reaction.lastCheckedAt = new Date().toISOString();
+                continue;
+            }
+
             if (item.status === "ignored" || item.status === "none") {
+                reaction.summary = truncateText(item.summary || item.reason || "已获知，没有明显情绪或行动反应", 500);
                 ignoreReactionInState(state, reaction.id);
                 continue;
             }
@@ -4400,7 +4478,7 @@ async function applyStateDelta(delta = {}, options = {}) {
                     targetCharacterId: item.action.targetCharacterId,
                     timing: item.action.timing,
                     note: truncateText(item.action.note ?? "", 400),
-                    targetArtifactId: item.action.targetArtifactId ?? null,
+                    targetArtifactId: item.action.targetArtifactId || artifactRefMap.get(String(item.action.targetArtifactRef ?? "")) || null,
                 } : {},
             };
 
@@ -4410,12 +4488,15 @@ async function applyStateDelta(delta = {}, options = {}) {
             const action = reaction.actionId ? getActionById(state, reaction.actionId) : null;
             const execution = item.action?.execute ?? {};
             if (action && action.timing === "now" && (item.action?.execute || action.type === "moment_like") && isSocialAction(action)) {
-                executeActionInState(state, action.id, {
+                const result = executeActionInState(state, action.id, {
                     text: truncateText(execution.text ?? "", 1200),
                     title: truncateText(execution.title ?? "", 160),
                     anonymous: Boolean(execution.anonymous),
                     time: execution.time ?? state.world.datetime,
                 });
+                if (item.action.ref && eventRefMap.has(String(item.action.ref))) rejected.push("reaction:duplicate-ref");
+                else registerExecutionRefs(item.action, result, eventRefMap, artifactRefMap);
+                applyInformationDelta(state, delta, eventRefMap, processedInformation);
             }
         }
     }
@@ -4432,62 +4513,21 @@ async function applyStateDelta(delta = {}, options = {}) {
             }
 
             if (isSocialAction(action) && (item.execute || (action.type === "moment_like" && item.status === "done"))) {
-                executeActionInState(state, action.id, {
+                const result = executeActionInState(state, action.id, {
                     text: truncateText(item.execute?.text ?? "", 1200),
                     title: truncateText(item.execute?.title ?? "", 160),
                     anonymous: Boolean(item.execute?.anonymous),
                     time: item.execute?.time ?? state.world.datetime,
                 });
+                if (item.ref && eventRefMap.has(String(item.ref))) rejected.push("action:duplicate-ref");
+                else registerExecutionRefs(item, result, eventRefMap, artifactRefMap);
+                applyInformationDelta(state, delta, eventRefMap, processedInformation);
             } else if (item.status === "done") {
                 setActionStatusInState(state, action.id, "done");
             }
         }
     }
 
-    if (Array.isArray(delta.characterRelations)) {
-        for (const item of delta.characterRelations.slice(0, 12)) {
-            const ids = item?.characterIds;
-            if (!Array.isArray(ids) || ids.length !== 2) continue;
-            if (ids[0] === ids[1]) { rejected.push("relationship:self"); continue; }
-            if (!state.characters[ids[0]] || !state.characters[ids[1]]) continue;
-
-            const key = getRelationKey(ids[0], ids[1]);
-            const relationship = getRelationshipSnapshot(state, ids[0], ids[1]);
-            if (typeof item.friendship === "boolean") relationship.friendship = item.friendship;
-            if (item.source) relationship.source = truncateText(item.source, 500);
-
-            if (Array.isArray(item.tags)) {
-                relationship.tags = [...new Set(item.tags.map(tag => truncateText(String(tag).trim(), 40)).filter(Boolean))].slice(0, 10);
-            }
-
-            if (item.summary !== undefined) {
-                relationship.summary = truncateText(String(item.summary ?? ""), 500);
-            }
-
-            if (item.perspectives && typeof item.perspectives === "object") {
-                for (const characterId of relationship.characterIds) {
-                    const incoming = item.perspectives[characterId];
-                    if (!incoming) continue;
-
-                    if (incoming.attitudeDelta !== undefined) {
-                        const before = clampSigned(relationship.perspectives[characterId].attitude ?? 0);
-                        const deltaValue = Math.max(-10, Math.min(10, Number(incoming.attitudeDelta) || 0));
-                        relationship.perspectives[characterId].attitude = clampSigned(before + deltaValue);
-                    } else if (incoming.attitude !== undefined) {
-                        relationship.perspectives[characterId].attitude = clampSigned(incoming.attitude);
-                    }
-
-                    if (incoming.impression !== undefined) {
-                        relationship.perspectives[characterId].impression = truncateText(String(incoming.impression ?? ""), 500);
-                    }
-                }
-            }
-
-            state.characterRelations[key] = relationship;
-        }
-    }
-
-    applySocialDelta(state, delta, eventRefMap, rejected);
     state.runtime.lastProcessedMessageId = options.messageId ?? state.runtime.lastProcessedMessageId;
     state.runtime.lastTrackerStatus = rejected.length ? "applied_with_rejections" : "applied";
     state.runtime.lastTrackerError = rejected.join("; ");
@@ -5448,7 +5488,7 @@ function renderWorldState(state) {
                     <div class="airp-world-tool-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
                     <div>
                         <strong>信息传播</strong>
-                        <span>${state.pendingExposures.length} 条待确认 · 谁真的看到了什么</span>
+                        <span>${state.pendingExposures.length} 条待模型判断 · 谁真的看到了什么</span>
                     </div>
                     ${state.pendingExposures.length ? `<b class="airp-tool-badge">${state.pendingExposures.length}</b>` : ""}
                     <i class="fa-solid fa-chevron-right"></i>
@@ -5999,7 +6039,7 @@ function renderEventCreate(state) {
 
             <div class="airp-section-heading airp-section-gap-small">传播对象（可选）</div>
             <div class="airp-event-audience-note">
-                私聊 / 群聊 / 口耳相传请勾具体对象；论坛、朋友圈或公开事件留空时，默认当前世界所有角色都进入“可能看到”的传播队列。
+                私聊 / 群聊 / 口耳相传请勾具体对象；论坛或公开事件留空时，当前世界活跃角色进入传播候选，朋友圈只对好友形成候选。模型会在后续回复判断谁实际看到。
             </div>
             <div class="airp-event-person-grid">
                 ${characters.map(character => renderEventPersonOption(
@@ -6117,7 +6157,7 @@ function renderEventDetail(state, eventId) {
                 ${getPendingExposureCountForEvent(state, event.id) ? `
                     <div class="airp-event-source-box airp-propagation-summary-box">
                         <span>传播中</span>
-                        <p>${getPendingExposureCountForEvent(state, event.id)} 个角色有机会看到这条信息，但目前尚未确认是否真正获知。</p>
+                        <p>${getPendingExposureCountForEvent(state, event.id)} 个角色有机会看到，正在等待模型判断阅读时机；后续回复会继续处理，无需逐条手动确认。</p>
                     </div>
                 ` : ""}
 
@@ -6243,7 +6283,7 @@ function renderPropagationCenter(state) {
         <div class="airp-page">
             <div class="airp-section-heading airp-heading-no-pad">待传播信息</div>
             <div class="airp-character-count airp-relation-page-note">
-                “可能看到”不等于“已经知道”。这里先人工确认；以后会交给角色习惯、社交关系和模型自动判断。
+                模型会在回复中根据人物习惯和剧情判断谁看到了，并处理对应反应。“可能看到”不等于“已经知道”；这里也可以手动调整。
             </div>
 
             <div class="airp-propagation-list">
@@ -6279,6 +6319,7 @@ function renderPropagationItem(state, exposure) {
             </button>
 
             ${exposure.reason ? `<div class="airp-propagation-reason">${escapeHtml(exposure.reason)}</div>` : ""}
+            ${exposure.deferReason ? `<div class="airp-propagation-reason">暂缓原因：${escapeHtml(exposure.deferReason)}</div>` : ""}
 
             <div class="airp-propagation-actions">
                 <button type="button" class="airp-propagation-skip"
@@ -6362,7 +6403,7 @@ function renderReactionCenter(state) {
             </section>
 
             <div class="airp-reaction-note">
-                “知道了”不等于“立刻做事”。这里单独决定情绪 / 关系变化，以及是否生成后续行动。
+                模型会判断内部反应与后续行动；没有明显反应也会记录。“知道了”不等于“立刻做事”，延迟行动会保留意图。
             </div>
 
             <div class="airp-section-heading airp-section-gap-small">待处理反应</div>

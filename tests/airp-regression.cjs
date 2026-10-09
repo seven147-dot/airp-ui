@@ -341,6 +341,91 @@ test('reading an ordinary forum post does not repeatedly trigger metadata saves'
     assert.equal(saves,0);
 });
 
+test('new forum ref supports same-turn readers, missed readers and no-reaction result', async () => {
+    const f=fixture();f.npc('a');f.npc('b');f.npc('c');
+    await f.run('applyStateDelta({social:[{ref:"post",type:"forum",authorId:"a",title:"摄影社招新",text:"今晚开放活动室",anonymous:true}],exposures:[{characterId:"b",eventRef:"post",outcome:"seen",interpretation:"只看到公开招新时间"},{characterId:"c",eventRef:"post",outcome:"missed",reason:"不关注社团论坛"}],reactions:[{characterId:"b",eventRef:"post",status:"none",summary:"看到了，但没有兴趣参加"}]})');
+    const id=f.state.forum[0].eventId;
+    assert.equal(f.state.characters.b.knowledge[id].interpretation,'只看到公开招新时间');
+    assert.equal(f.state.characters.c.knowledge[id],undefined);
+    assert.equal(f.state.pendingExposures.length,0);
+    assert.equal(f.state.reactions.find(r=>r.characterId==='b').status,'ignored');
+    assert.equal(f.state.reactions.find(r=>r.characterId==='b').summary,'看到了，但没有兴趣参加');
+    assert.equal(f.state.exposureHistory.find(e=>e.characterId==='c').interpretation,'不关注社团论坛');
+    assert.ok(!f.state.events.find(e=>e.id===id).summary.includes('a发布'));
+});
+test('same-turn forum reaction can reply to the newly created post artifact ref', async () => {
+    const f=fixture();f.npc('a');f.npc('b');
+    await f.run('applyStateDelta({social:[{ref:"post",type:"forum",authorId:"a",text:"活动室今晚开放"}],exposures:[{characterId:"b",eventRef:"post",outcome:"seen",interpretation:"看到活动通知"}],reactions:[{characterId:"b",eventRef:"post",summary:"想问清楚时间",action:{type:"forum_reply",targetArtifactRef:"post",timing:"now",execute:{text:"几点开始？"}}}]})');
+    const post=f.state.forum[0];
+    assert.equal(post.replies[0].text,'几点开始？');
+    assert.equal(f.state.reactions.find(r=>r.characterId==='b').status,'resolved');
+    const replyEvent=f.state.events.find(e=>e.id===post.replies[0].eventId);
+    assert.equal(replyEvent.sourceEventId,post.eventId);
+});
+test('explicit exposure and reaction delays stay pending with their reason and no invented scores', async () => {
+    const f=fixture();f.npc('a');f.npc('b');f.npc('c');
+    await f.run('applyStateDelta({social:[{ref:"post",type:"forum",authorId:"a",text:"考试安排"}],exposures:[{characterId:"b",eventRef:"post",outcome:"defer",reason:"正在上课，晚间再浏览"},{characterId:"c",eventRef:"post",outcome:"seen",interpretation:"看到考试日期"}],reactions:[{characterId:"c",eventRef:"post",status:"deferred",reason:"需要核对自己的日程",npcAttitudeDelta:9}]})');
+    assert.equal(f.state.pendingExposures.find(e=>e.characterId==='b').deferReason,'正在上课，晚间再浏览');
+    assert.equal(f.state.reactions.find(r=>r.characterId==='c').deferReason,'需要核对自己的日程');
+    assert.equal(f.state.reactions.find(r=>r.characterId==='c').status,'pending');
+    assert.equal(f.state.characters.c.attitude,0);
+    const prompt=f.run('buildAirpContextBlock(SillyTavern.getContext().chatMetadata.airp)');
+    assert.ok(prompt.includes('正在上课，晚间再浏览'));
+    assert.ok(prompt.includes('需要核对自己的日程'));
+});
+test('omitted readership is not silently treated as seen and unknown reactions are rejected', async () => {
+    const f=fixture();f.npc('a');f.npc('b');
+    await f.run('applyStateDelta({social:[{ref:"post",type:"forum",authorId:"a",text:"无依据的帖子"}],reactions:[{characterId:"b",eventRef:"post",summary:"不该凭空获知",npcAttitudeDelta:5}]})');
+    assert.equal(f.state.characters.b.knowledge[f.state.forum[0].eventId],undefined);
+    assert.equal(f.state.characters.b.attitude,0);
+    assert.equal(f.state.pendingExposures.length,1);
+    assert.match(f.state.runtime.lastTrackerError,/unknown-event/);
+});
+test('new post knowledge applies once and same-event score is not counted twice', async () => {
+    const f=fixture();f.npc('a');f.npc('b');
+    f.run('state.characters.b.type="main";state.characters.b.relation=createDefaultRelation();');
+    await f.run('applyStateDelta({social:[{ref:"post",type:"forum",authorId:"a",text:"第一次活动"},{type:"forum",authorId:"a",text:"第二条无关通知"}],knowledge:[{characterId:"b",eventRef:"post",source:"forum",interpretation:"读到了第一条活动"}],relationChanges:[{characterId:"b",eventRef:"post",changes:{trust:2},reason:"活动通知可靠"}],reactions:[{characterId:"b",eventRef:"post",summary:"认可通知",relationChanges:{trust:2}}]})');
+    assert.equal(f.state.characters.b.relation.trust,2);
+    assert.equal(f.state.reactions.filter(r=>r.trigger==='knowledge'&&r.eventId===f.state.forum[0].eventId).length,1);
+    assert.equal(f.state.reactions.find(r=>r.trigger==='knowledge').status,'resolved');
+});
+test('source event knowledge is available before posting and source refs remain distinct', async () => {
+    const f=fixture();f.npc('a');f.npc('b');
+    await f.run('applyStateDelta({events:[{ref:"source",summary:"公开活动通知",channel:"forum",visibility:"public"}],knowledge:[{characterId:"a",eventRef:"source",interpretation:"读到了通知"}],social:[{ref:"post",eventRef:"source",type:"forum",authorId:"a",text:"转发活动信息"}],exposures:[{characterId:"b",eventRef:"post",outcome:"seen",interpretation:"从转帖看到活动信息"}],reactions:[{characterId:"b",eventRef:"post",status:"none",summary:"看到了转帖"}]})');
+    assert.equal(f.state.events.find(e=>e.id===f.state.forum[0].eventId).sourceEventId,f.state.events[0].id);
+    assert.equal(f.state.characters.b.knowledge[f.state.forum[0].eventId].interpretation,'从转帖看到活动信息');
+});
+test('moments still respect NPC friendships established in the same delta', async () => {
+    const f=fixture();f.npc('a');f.npc('b');f.npc('c');
+    await f.run('applyStateDelta({characterRelations:[{characterIds:["a","b"],friendship:true,source:"已交换联系方式"}],social:[{ref:"moment",type:"moments",authorId:"a",text:"晚饭照片"}],exposures:[{characterId:"b",eventRef:"moment",outcome:"seen"},{characterId:"c",eventRef:"moment",outcome:"seen"}],reactions:[{characterId:"b",eventRef:"moment",status:"none",summary:"看过照片"}]})');
+    const id=f.state.moments[0].eventId;
+    assert.ok(f.state.characters.b.knowledge[id]);
+    assert.equal(f.state.characters.c.knowledge[id],undefined);
+    assert.equal(f.state.exposureHistory.filter(e=>e.characterId==='c').length,0);
+});
+test('reaction-generated post ref can be read and reacted to later in the same delta', async () => {
+    const f=fixture();f.npc('a');f.npc('b');f.npc('c');
+    await f.run('applyStateDelta({social:[{ref:"first",type:"forum",authorId:"a",text:"社团消息"}],exposures:[{characterId:"b",eventRef:"first",outcome:"seen"},{characterId:"c",eventRef:"followup",outcome:"seen",interpretation:"只读到后续转帖"}],reactions:[{characterId:"b",eventRef:"first",summary:"愿意转发",action:{ref:"followup",type:"forum",timing:"now",execute:{text:"我也关注这个活动"}}},{characterId:"c",eventRef:"followup",status:"none",summary:"看到了转帖，没有进一步互动"}]})');
+    assert.equal(f.state.forum.length,2);
+    assert.ok(f.state.characters.c.knowledge[f.state.forum[1].eventId]);
+    assert.equal(f.state.reactions.find(r=>r.characterId==='c').status,'ignored');
+});
+test('unresolved social source refs are rejected instead of becoming unrelated posts', async () => {
+    const f=fixture();f.npc('a');
+    await f.run('applyStateDelta({social:[{ref:"post",eventRef:"missing",type:"forum",authorId:"a",text:"不该发布"}]})');
+    assert.equal(f.state.forum.length,0);
+    assert.match(f.state.runtime.lastTrackerError,/unknown-source-event/);
+});
+test('failed save rolls back new post, readership and reaction together', async () => {
+    const f=fixture();f.npc('a');f.npc('b');
+    f.context.saveMetadata=async()=>{throw Error('server unavailable')};
+    await assert.rejects(f.run('applyStateDelta({social:[{ref:"post",type:"forum",authorId:"a",text:"事务测试"}],exposures:[{characterId:"b",eventRef:"post",outcome:"seen"}],reactions:[{characterId:"b",eventRef:"post",status:"none",summary:"看过"}]})'));
+    assert.equal(f.state.forum.length,0);
+    assert.equal(f.state.events.length,0);
+    assert.equal(f.state.reactions.length,0);
+    assert.equal(Object.keys(f.state.characters.b.knowledge).length,0);
+});
+
 (async () => {
     let failed = 0;
     for (const [name, execute] of cases) {
