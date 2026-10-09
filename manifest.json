@@ -4,7 +4,7 @@
   "js": "index.js",
   "css": "style.css",
   "author": "seven147-dot",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "hooks": {
     "activate": "onActivate"
   }

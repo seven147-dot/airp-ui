@@ -6019,16 +6019,249 @@ body.airp-ui-enabled
         margin-right: 6px !important;
     }
 }
-/* V14: compact controls for contacts, recovery and event history. */
-.airp-trace, .airp-save-banner { margin: 14px 0; padding: 14px; border-radius: 16px; overflow-wrap: anywhere; }
-.airp-trace summary { cursor: pointer; font-weight: 600; }
-.airp-trace button, .airp-save-banner button { display: block; width: 100%; margin: 8px 0; padding: 10px; text-align: left; border: 1px solid var(--airp-border, rgba(128,128,128,.25)); border-radius: 10px; color: inherit; background: transparent; cursor: pointer; }
-.airp-trace p { margin: 10px 0; line-height: 1.6; }
-.airp-trace-label { margin-top: 12px; font-weight: 600; }
-.airp-save-banner { border: 1px solid #b8860b; background: rgba(184,134,11,.12); }
-.airp-save-banner p { margin: 0; }
-.airp-trace-link, .airp-contact-label button { border: 0; background: transparent; color: inherit; opacity: .72; font-size: 12px; cursor: pointer; padding: 5px 0; }
-.airp-contact-label { margin: 8px 0; font-size: 12px; opacity: .8; }
-.airp-profile-actions { flex-wrap: wrap; }
-#airp-phone-overlay button:disabled { opacity: .45; cursor: default; }
-.airp-v10-notification[role="button"] { cursor: pointer; }
+/* =========================================================
+   AIRP v14 · 好友 / 保存恢复 / 事件记录
+   沿用手机页的浅蓝玻璃、柔和边框与紧凑字号。
+   ========================================================= */
+
+#airp-phone-overlay .airp-trace,
+#airp-phone-overlay .airp-save-banner {
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 14px 0;
+    padding: 13px 14px;
+    border-radius: 22px;
+    color: #587590;
+    font-size: 10.5px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+#airp-phone-overlay .airp-trace summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 32px;
+    color: #4d6f91;
+    font-size: 11px;
+    font-weight: 650;
+    list-style: none;
+    cursor: pointer;
+}
+
+#airp-phone-overlay .airp-trace summary::-webkit-details-marker {
+    display: none;
+}
+
+#airp-phone-overlay .airp-trace summary::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    flex: 0 0 auto;
+    margin-right: 3px;
+    border-right: 1.5px solid #8eabc5;
+    border-bottom: 1.5px solid #8eabc5;
+    transform: rotate(-45deg);
+    transition: transform .18s ease;
+}
+
+#airp-phone-overlay .airp-trace[open] summary {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(135, 180, 221, .16);
+}
+
+#airp-phone-overlay .airp-trace[open] summary::after {
+    transform: rotate(45deg);
+}
+
+#airp-phone-overlay .airp-trace button,
+#airp-phone-overlay .airp-save-banner button {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    margin: 8px 0 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, .84);
+    border-radius: 15px;
+    color: #527da6;
+    background: linear-gradient(135deg, rgba(234, 245, 255, .86), rgba(213, 233, 252, .68));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75), 0 4px 12px rgba(87, 139, 190, .07);
+    font: inherit;
+    font-weight: 550;
+    line-height: 1.65;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+#airp-phone-overlay .airp-trace > p {
+    margin: 8px 0;
+    padding: 9px 11px;
+    border-left: 2px solid rgba(143, 188, 231, .38);
+    border-radius: 3px 13px 13px 3px;
+    background: rgba(255, 255, 255, .32);
+}
+
+#airp-phone-overlay .airp-trace-label {
+    margin: 14px 2px 5px;
+    color: #7895b1;
+    font-size: 9.5px;
+    font-weight: 650;
+}
+
+#airp-phone-overlay .airp-trace-action {
+    margin-top: 10px;
+    padding: 10px 11px;
+    border: 1px solid rgba(135, 180, 221, .14);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .34);
+}
+
+#airp-phone-overlay .airp-trace-action p {
+    margin: 0;
+}
+
+#airp-phone-overlay .airp-save-banner {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, .84);
+    background: linear-gradient(135deg, rgba(255, 251, 244, .92), rgba(235, 245, 255, .78));
+    box-shadow: inset 3px 0 0 rgba(202, 166, 106, .55), 0 8px 22px rgba(87, 139, 190, .09);
+}
+
+#airp-phone-overlay .airp-save-banner p {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin: 0 0 3px;
+    color: #8b775a;
+}
+
+#airp-phone-overlay .airp-save-banner button {
+    margin: 0;
+    text-align: center;
+}
+
+#airp-phone-overlay .airp-save-banner button:only-of-type {
+    grid-column: 1 / -1;
+}
+
+#airp-phone-overlay .airp-trace-link {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    box-sizing: border-box;
+    max-width: 100%;
+    min-height: 30px;
+    margin: 7px 0 3px;
+    padding: 5px 10px;
+    border: 1px solid rgba(135, 180, 221, .16);
+    border-radius: 999px;
+    color: #7895b1;
+    background: rgba(255, 255, 255, .42);
+    font: inherit;
+    font-size: 9px;
+    line-height: 1.5;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease;
+}
+
+#airp-phone-overlay .airp-chat-message.is-player .airp-trace-link {
+    align-self: flex-end;
+}
+
+#airp-phone-overlay .airp-contact-label {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 9px 0 0;
+    padding: 0 17px;
+    color: #7891ae;
+    font-size: 10px;
+    line-height: 1.65;
+}
+
+#airp-phone-overlay .airp-contact-label button {
+    min-height: 30px;
+    padding: 4px 8px;
+    border: 1px solid rgba(135, 180, 221, .14);
+    border-radius: 999px;
+    color: #8199af;
+    background: rgba(255, 255, 255, .38);
+    font: inherit;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+#airp-phone-overlay .airp-profile-actions {
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+#airp-phone-overlay .airp-profile-action {
+    box-sizing: border-box;
+    min-height: 32px;
+    justify-content: center;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+#airp-phone-overlay .airp-v10-notification[role="button"] {
+    cursor: pointer;
+}
+
+#airp-phone-overlay :is(.airp-trace button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button, .airp-profile-action):active:not(:disabled) {
+    transform: scale(.98);
+}
+
+#airp-phone-overlay :is(.airp-trace summary, .airp-trace button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button, .airp-profile-action, .airp-v10-notification[role="button"]):focus-visible {
+    outline: 2px solid #8dbcf1;
+    outline-offset: 3px;
+}
+
+#airp-phone-overlay button:disabled {
+    opacity: .45;
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+}
+
+@media (hover: hover) {
+    #airp-phone-overlay :is(.airp-trace button, .airp-save-banner button, .airp-trace-link, .airp-contact-label button):hover:not(:disabled) {
+        color: #527da6;
+        background: rgba(239, 248, 255, .95);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 5px 14px rgba(87, 139, 190, .1);
+    }
+}
+
+@media (max-width: 360px) {
+    #airp-phone-overlay .airp-save-banner {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #airp-phone-overlay .airp-profile-actions {
+        gap: 5px;
+    }
+
+    #airp-phone-overlay .airp-profile-action {
+        padding: 7px 9px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #airp-phone-overlay .airp-trace summary::after,
+    #airp-phone-overlay :is(.airp-trace button, .airp-save-banner button, .airp-trace-link) {
+        transition: none;
+    }
+}
