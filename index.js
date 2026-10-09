@@ -9,6 +9,7 @@ const AIRP_PROMPT_ID = "airp_state_tracker_v14";
 const AIRP_STATE_BLOCK_RE = /<AIRP_STATE>\s*(?:```(?:json)?\s*)?([\s\S]*?)(?:\s*```)?\s*<\/AIRP_STATE>/gi;
 const AIRP_OPENING_BLOCK_RE = /<AIRP_OPENING(?:\s+type=["']([^"']+)["'])?\s*>\s*(?:```(?:json)?\s*)?([\s\S]*?)(?:\s*```)?\s*<\/AIRP_OPENING>/i;
 const AIRP_WORLD_OPENING_MARKER = "<<AIRP_WORLD_OPENING>>";
+const AIRP_WORLD_OPENING_MARKER_RE = /<<AIRP_WORLD_OPENING(?::([^<>\r\n]*))?>>/;
 const AIRP_LEGACY_ADMISSION_RE = /^\s*\[类型[：:]\s*正式录取通知\]\s*/;
 const AIRP_OPENING_STYLE_ID = "airp-opening-style-v132";
 const RELATION_KEYS = Object.freeze([
@@ -4834,6 +4835,30 @@ function resolveWorldOpeningMacros(text = "", state = null) {
     return String(text ?? "").replace(/\{\{\s*(user|player|char|worldDate)\s*\}\}/g, (_, key) => values[key] ?? "");
 }
 
+function parseWorldOpeningMarker(text = "") {
+    const match = String(text ?? "").match(AIRP_WORLD_OPENING_MARKER_RE);
+    return match ? { marker: match[0], name: match[0] === AIRP_WORLD_OPENING_MARKER ? null : match[1].trim() } : null;
+}
+
+async function readWorldOpeningSource(opening, pack) {
+    // The unnamed marker retains the existing world-pack loader and configuration.
+    if (opening.name === null) return String(pack.documents?.opening ?? "").trim();
+    const name = opening.name;
+    if (!name || /[\/\\\u0000-\u001f]/.test(name) || name === "." || name === "..") {
+        console.warn(`[${MODULE_NAME}] 无效的开场名称：${opening.marker}；保留原占位符。`);
+        return "";
+    }
+    const path = `世界包/${pack.folder}/开场/${name}.md`;
+    try {
+        const source = String(await fetchExtensionText(path)).trim();
+        if (!source) console.warn(`[${MODULE_NAME}] 开场文件为空：${path}；保留原占位符，不使用其他开场。`);
+        return source;
+    } catch (error) {
+        console.warn(`[${MODULE_NAME}] 无法读取开场文件：${path}；保留原占位符，不使用其他开场。`, error);
+        return "";
+    }
+}
+
 async function materializeWorldPackOpening() {
     const context = getContext();
     const currentCard = getCurrentCard();
@@ -4843,21 +4868,30 @@ async function materializeWorldPackOpening() {
         message
         && !message.is_user
         && !message.is_system
-        && String(message.mes ?? "").includes(AIRP_WORLD_OPENING_MARKER),
+        && parseWorldOpeningMarker(message.mes),
     );
     if (index < 0) return false;
 
+    const owner = captureOwner(context);
+    const message = context.chat[index];
+    const originalText = String(message.mes ?? "");
+    const opening = parseWorldOpeningMarker(originalText);
     const state = await ensureState();
-    await loadWorldPack(state, false);
-    const source = String(worldPackCache.documents?.opening ?? "").trim();
+    const pack = await loadWorldPack(state, false);
+    if (pack.status !== "loaded") return false;
+    const source = await readWorldOpeningSource(opening, pack);
     if (!source) return false;
 
-    const message = context.chat[index];
+    try { assertOwner(owner); } catch { return false; }
+    if (getContext().chat?.[index] !== message || String(message.mes ?? "") !== originalText) return false;
+    const currentFolder = String(getContext().chatMetadata?.[AIRP_KEY]?.worldInfo?.packFolder || "学院世界").trim() || "学院世界";
+    if (currentFolder !== pack.folder) return false;
     message.mes = resolveWorldOpeningMacros(source, state);
     message.extra = message.extra || {};
     message.extra.airpWorldOpening = {
-        packFolder: worldPackCache.folder,
-        loadedAt: worldPackCache.loadedAt,
+        packFolder: pack.folder,
+        loadedAt: pack.loadedAt,
+        ...(opening.name === null ? {} : { openingName: opening.name, openingFile: `开场/${opening.name}.md` }),
     };
     syncCleanMessageToSwipe(message);
     context.updateMessageBlock?.(index, message, { rerenderMessage: true });

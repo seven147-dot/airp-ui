@@ -27,6 +27,31 @@ function fixture() {
 const cases = [];
 function test(name, execute) { cases.push([name, execute]); }
 
+function openingFixture(marker, { folder = '学院世界', documents = {} } = {}) {
+    const f=fixture();
+    f.context.characters=[{name:'AIRP · 叙事核心',avatar:'host.png',data:{extensions:{airp:{host:true}}}}];
+    f.state.worldInfo.packFolder=folder;
+    f.context.chat=[{is_user:false,is_system:false,mes:marker,swipe_id:0,swipes:[marker],swipe_info:[{extra:{}}]}];
+    const files=new Map(Object.entries({
+        [`世界包/${folder}/世界配置.json`]:JSON.stringify({files:{world:'世界设定.md',opening:'开场内容.md',style:'叙事风格.md'}}),
+        [`世界包/${folder}/世界设定.md`]:'原世界设定',
+        [`世界包/${folder}/开场内容.md`]:'默认开场，{{user}}。',
+        [`世界包/${folder}/叙事风格.md`]:'原叙事风格',
+        ...documents,
+    }));
+    const requests=[],warnings=[];
+    f.box.requestAnimationFrame=()=>{};
+    f.box.queueMicrotask=()=>{};
+    f.box.structuredClone=structuredClone;
+    f.box.console.warn=(...args)=>warnings.push(args.map(String).join(' '));
+    f.box.fetch=async url=>{
+        const relative=decodeURIComponent(new URL(url).pathname).replace(/^\/airp\//,'');
+        requests.push(relative);
+        return {ok:files.has(relative),status:files.has(relative)?200:404,statusText:files.has(relative)?'OK':'Not Found',text:async()=>files.get(relative)||''};
+    };
+    return {...f,files,requests,warnings};
+}
+
 test('long-term memory builds prompt and integrity detects missing references', () => {
     const f = fixture(); f.npc('a');
     f.run('state.memory.world.push({id:"m",eventId:"missing",text:"记忆"});state.memory.characters.a=[{eventId:"missing",text:"个人记忆"}];');
@@ -424,6 +449,88 @@ test('failed save rolls back new post, readership and reaction together', async 
     assert.equal(f.state.events.length,0);
     assert.equal(f.state.reactions.length,0);
     assert.equal(Object.keys(f.state.characters.b.knowledge).length,0);
+});
+
+test('legacy opening marker preserves macros, components, metadata and swipe content', async () => {
+    const f=openingFixture('<<AIRP_WORLD_OPENING>>',{documents:{'世界包/学院世界/开场内容.md':'<AIRP_OPENING type="document">{"title":"旧通知","body":"致 {{user}}"}</AIRP_OPENING>\n旧开场正文'}});
+    assert.equal(await f.run('materializeWorldPackOpening()'),true);
+    const message=f.context.chat[0];
+    assert.equal(message.mes,'旧开场正文');
+    assert.equal(message.extra.airpOpening.data.body,'致 玩家');
+    assert.equal(message.extra.airpWorldOpening.packFolder,'学院世界');
+    assert.equal(message.extra.airpWorldOpening.openingName,undefined);
+    assert.equal(message.swipes[0],message.mes);
+    assert.equal(message.swipe_info[0].extra.airpOpening.data.title,'旧通知');
+});
+test('named opening trims the name and uses the currently selected world pack', async () => {
+    const f=openingFixture('<<AIRP_WORLD_OPENING:  宴会  >>',{folder:'另一世界',documents:{'世界包/另一世界/开场/宴会.md':'命名开场，{{user}}。'}});
+    assert.equal(await f.run('materializeWorldPackOpening()'),true);
+    assert.equal(f.context.chat[0].mes,'命名开场，玩家。');
+    assert.equal(f.context.chat[0].extra.airpWorldOpening.openingName,'宴会');
+    assert.equal(f.context.chat[0].extra.airpWorldOpening.openingFile,'开场/宴会.md');
+    assert.ok(f.requests.includes('世界包/另一世界/开场/宴会.md'));
+    assert.ok(!f.requests.some(p=>p.includes('世界包/学院世界/')));
+    assert.equal(f.run('worldPackCache.documents.world'),'原世界设定');
+    assert.equal(f.run('worldPackCache.documents.style'),'原叙事风格');
+    assert.equal(f.run('worldPackCache.documents.opening'),'默认开场，{{user}}。');
+});
+test('new arbitrary opening filenames work without a JavaScript enumeration', async () => {
+    const f=openingFixture('<<AIRP_WORLD_OPENING:雨夜 2030>>',{documents:{'世界包/学院世界/开场/雨夜 2030.md':'新增开场测试'}});
+    assert.equal(await f.run('materializeWorldPackOpening()'),true);
+    assert.equal(f.context.chat[0].mes,'新增开场测试');
+});
+test('missing named opening warns without falling back or changing the message', async () => {
+    const marker='<<AIRP_WORLD_OPENING:不存在>>';const f=openingFixture(marker);
+    let saves=0;f.context.saveChat=async()=>{saves++};
+    assert.equal(await f.run('materializeWorldPackOpening()'),false);
+    assert.equal(f.context.chat[0].mes,marker);
+    assert.equal(f.context.chat[0].swipes[0],marker);
+    assert.equal(f.context.chat[0].extra,undefined);
+    assert.equal(saves,0);
+    assert.match(f.warnings.join('\n'),/世界包\/学院世界\/开场\/不存在\.md/);
+});
+test('empty named opening keeps its placeholder and warns instead of using the default', async () => {
+    const marker='<<AIRP_WORLD_OPENING:霸凌>>';const f=openingFixture(marker,{documents:{'世界包/学院世界/开场/霸凌.md':''}});
+    assert.equal(await f.run('materializeWorldPackOpening()'),false);
+    assert.equal(f.context.chat[0].mes,marker);
+    assert.match(f.warnings.join('\n'),/开场文件为空/);
+});
+test('named opening network failure is contained and preserves the marker', async () => {
+    const marker='<<AIRP_WORLD_OPENING:宴会>>';const f=openingFixture(marker);const fetch=f.box.fetch;
+    f.box.fetch=async url=>{if(decodeURIComponent(url).includes('/开场/'))throw Error('offline');return fetch(url)};
+    assert.equal(await f.run('materializeWorldPackOpening()'),false);
+    assert.equal(f.context.chat[0].mes,marker);
+    assert.match(f.warnings.join('\n'),/宴会\.md.*offline/);
+});
+test('empty names and directory traversal do not select another opening file', async () => {
+    for(const marker of ['<<AIRP_WORLD_OPENING:  >>','<<AIRP_WORLD_OPENING:../开场内容>>','<<AIRP_WORLD_OPENING:..\\开场内容>>']) {
+        const f=openingFixture(marker);
+        assert.equal(await f.run('materializeWorldPackOpening()'),false);
+        assert.equal(f.context.chat[0].mes,marker);
+        assert.equal(f.requests.filter(p=>p.includes('/开场/')).length,0);
+        assert.match(f.warnings.join('\n'),/无效的开场名称/);
+    }
+});
+test('legacy opening configuration and disabled world pack retain existing behavior', async () => {
+    const f=openingFixture('<<AIRP_WORLD_OPENING>>',{documents:{'世界包/学院世界/世界配置.json':JSON.stringify({files:{opening:'旧自定义开场.md'}}),'世界包/学院世界/旧自定义开场.md':'旧配置开场'}});
+    assert.equal(await f.run('materializeWorldPackOpening()'),true);
+    assert.equal(f.context.chat[0].mes,'旧配置开场');
+    const disabled=openingFixture('<<AIRP_WORLD_OPENING:宴会>>');disabled.state.settings.worldPackEnabled=false;
+    assert.equal(await disabled.run('materializeWorldPackOpening()'),false);
+    assert.equal(disabled.requests.length,0);
+});
+test('switching chats during named opening fetch cannot replace the old or new chat', async () => {
+    const marker='<<AIRP_WORLD_OPENING:宴会>>';const f=openingFixture(marker);const original=f.context.chat[0];const fetch=f.box.fetch;
+    f.box.fetch=async url=>{
+        if(decodeURIComponent(url).includes('/开场/')) {
+            f.context.chatMetadata={};f.context.chat=[{mes:'新聊天'}];f.context.getCurrentChatId=()=> 'another-chat';
+            return {ok:true,text:async()=> '不该写入的开场'};
+        }
+        return fetch(url);
+    };
+    assert.equal(await f.run('materializeWorldPackOpening()'),false);
+    assert.equal(original.mes,marker);
+    assert.equal(f.context.chat[0].mes,'新聊天');
 });
 
 (async () => {
